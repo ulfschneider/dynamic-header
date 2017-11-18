@@ -1,3 +1,10 @@
+/*
+ * DynamicHeader v1.0 18-Nov-2017
+ *
+ *
+ * Copyright (c) 2017 Ulf Schneider
+ * Licensed under the Apache 2.0 License.
+ */
 var DynamicHeader = (function() {
   //state
   var self = this;
@@ -64,15 +71,7 @@ var DynamicHeader = (function() {
   }
 
   function selectContent() {
-    if (config.contentId) {
-       content = document.getElementById(config.contentId);
-      if (!content) {
-        console.error('Content with id=[' + config.contentId + '] could not be found in DOM');
-      }
-
-    } else {
-      content = document.body.firstElementChild;
-    }
+    content = document.body.firstElementChild;
   }
 
   function setContentTrim(margin) {
@@ -127,12 +126,12 @@ var DynamicHeader = (function() {
 
     if (Math.abs(lastScrollTop - scrollTop) <= config.delta) return;
 
-    if (scrollTop > lastScrollTop && scrollTop > headerHeight){
+    if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
       // if current position > last position AND scrolled past header height,
       // move the header out of the way
       setHeaderTop(-headerHeight + 'px');
     } else {
-      if(scrollTop + windowHeight() < documentHeight()) {
+      if (scrollTop + windowHeight() < documentHeight()) {
         setHeaderTop(0);
       }
     }
@@ -169,7 +168,6 @@ var DynamicHeader = (function() {
     self.config = {
       delta: 5,
       headerId: 'header',
-      contentId: ''
     }
     lastScrollTop = 0;
     scrolled = false;
@@ -180,16 +178,12 @@ var DynamicHeader = (function() {
     trim = null;
     header = null;
     content = null;
-
   }
 
   function transferConfig(config) {
     if (config) {
       if (config.headerId) {
         self.config.headerId = config.headerId;
-      }
-      if (config.contentId) {
-        self.config.contentId = config.contentId;
       }
       if (config.delta) {
         self.config.delta = config.delta;
@@ -201,7 +195,6 @@ var DynamicHeader = (function() {
   //public API
   return {
     init: function(config) {
-      //init
       cleanUp();
       transferConfig(config);
       window.addEventListener('load', onload);
