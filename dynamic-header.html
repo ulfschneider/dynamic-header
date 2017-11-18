@@ -4,6 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Dynamic Header Example</title>
+
+  <script src="dynamic-header.min.js"></script>
+  <script>
+    DynamicHeader.init();
+    /*  Without any arguments, DynamicHeader.init() will search for a container
+     *  with id="header" and will make that container the dynamic header.
+     *  Alternative usage:
+     *  DynamicHeader.init({'headerId' : 'header', 'delta' : 5});
+     *  @param {String} headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
+     *  @param {Number} delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
+     */
+  </script>
 </head>
 
 <body style="line-height:1.62em;">
@@ -53,18 +65,5 @@
       die Scham ihn überleben.</p>
   </div>
 </body>
-<script src="dynamic-header.js"></script>
-<script>
-  DynamicHeader.init();
-  /*  Without any arguments, DynamicHeader.init() will search for a container
-      with id="header" and will make that container the dynamic header.
-
-      Alternative usage:
-      DynamicHeader.init({'headerId' : 'header', 'delta' : 5});
-      headerId: Specify the id of the container you want to make the
-      dynamic header. Default is 'header'.
-      delta: The number of pixels a user need to scroll at least in order to make
-      DynamicHeader react on the scrolling. Default is 5.  */
-</script>
 
 </html>

@@ -1,9 +1,10 @@
+/* minifyOnSave, filenamePattern: ./$1.min.$2 */
 /*
- * DynamicHeader v1.0 18-Nov-2017
+ * DynamicHeader
  *
- *
- * Copyright (c) 2017 Ulf Schneider
- * Licensed under the Apache 2.0 License.
+ * @version 1.0 18-Nov-2017
+ * @author Ulf Schneider
+ * @license Apache 2.0 License.
  */
 var DynamicHeader = (function() {
   //state
