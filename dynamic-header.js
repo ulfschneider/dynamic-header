@@ -6,6 +6,7 @@
  *
  * @version 1.0 18-Nov-2017
  * @author Ulf Schneider
+ * @link https://github.com/ulfschneider/dynamic-header
  * @license Apache 2.0 License.
  */
 var DynamicHeader = (function() {
@@ -14,6 +15,7 @@ var DynamicHeader = (function() {
   var scrolled, lastScrollTop;
   var header, content, trim;
   var initialHeaderStyle;
+  var TRANSITION = 'top 0.2s ease-in-out';
 
   function windowHeight() {
     return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -36,6 +38,8 @@ var DynamicHeader = (function() {
     return top < 0;
   }
 
+
+
   function modifyHeaderStyle() {
     //save header style for later clean up
     initialHeaderStyle = {};
@@ -46,7 +50,7 @@ var DynamicHeader = (function() {
     initialHeaderStyle.right = header.style.right;
 
     //modify header style
-    header.style.transition = 'top 0.2s ease-in-out';
+    header.style.transition = TRANSITION;
     header.style.position = 'fixed';
     header.style.top = '0';
     header.style.left = '0';
@@ -109,26 +113,20 @@ var DynamicHeader = (function() {
   function trimHeader() {
     if (header) {
       if (isHeaderHidden()) {
+        var headerHeight = getHeaderHeight();
         //move the header out of the way, even if resizing the window
         //leads to different height of header
-        setHeaderTop('-1000px');
+        setHeaderTop(-2 * headerHeight + 'px');
       }
     }
   }
 
   function moveHeader() {
-    var headerHeight = getHeaderHeight();
-    if (isHeaderHidden()) {
-      //if the header has been trimmed before, it should be
-      //moved into a position from where it can be moved
-      //with proper animation speed
-      setHeaderTop(-headerHeight + 'px');
-    }
-
     var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 
     if (Math.abs(lastScrollTop - scrollTop) <= config.delta) return;
 
+    var headerHeight = getHeaderHeight();
     if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
       // if current position > last position AND scrolled past header height,
       // move the header out of the way
@@ -148,23 +146,6 @@ var DynamicHeader = (function() {
 
   function onscroll() {
     scrolled = true;
-  }
-
-  function onload() {
-    selectHeader();
-    selectContent();
-
-    if (header) {
-      insertTrim();
-      window.addEventListener('resize', onresize);
-      window.addEventListener('scroll', onscroll);
-      setInterval(function() {
-        if (scrolled) {
-          scrolled = false;
-          moveHeader();
-        }
-      }, 250);
-    }
   }
 
   function cleanUp() {
@@ -194,6 +175,22 @@ var DynamicHeader = (function() {
     }
   }
 
+  function onload() {
+    selectHeader();
+
+    if (header) {
+      selectContent();
+      insertTrim();
+      window.addEventListener('resize', onresize);
+      window.addEventListener('scroll', onscroll);
+      setInterval(function() {
+        if (scrolled) {
+          scrolled = false;
+          moveHeader();
+        }
+      }, 250);
+    }
+  }
 
   //public API
   return {

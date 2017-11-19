@@ -10,15 +10,19 @@
     DynamicHeader.init();
     /*  Without any arguments, DynamicHeader.init() will search for a container
      *  with id="header" and will make that container the dynamic header.
+     *
      *  Alternative usage:
-     *  DynamicHeader.init({'headerId' : 'header', 'delta' : 5});
-     *  @param {String} headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
-     *  @param {Number} delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
+     *  @function DynamicHeader.init(config);
+     *  @param {String} config.headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
+     *  @param {Number} config.delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
+     *
+     *  @function DynamicHeader.destroy();
+     *  Revert all changes that have been made by DynamicHeader.init();
      */
   </script>
 </head>
 
-<body style="line-height:1.62em;">
+<body style="line-height:1.62em; background: linear-gradient(orange, lightblue);">
   <div id="header" style="background:black; color:white; padding:.81em">
     <p>PLEASE SCROLL DOWN AND UP TO SEE DYNAMIC-HEADER BEHAVIOR</p>
   </div>
