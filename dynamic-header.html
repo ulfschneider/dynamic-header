@@ -9,19 +9,18 @@
     <script src="dynamic-header.min.js"></script>
     <script>
         DynamicHeader.init({
-            pickColorFromImgId: 'banner',
+            pickBackgroundFromImgId: 'banner',
             lightColor: '#fff',
             darkColor: '#000'
-
         });
     </script>
 </head>
 
-<body style="line-height:1.62em; background: linear-gradient(orange, lightblue);">
+<body style="line-height:1.62em; background: linear-gradient(orange, lightblue); margin:0;">
     <div id="header" style="padding:.81em">
         <p>PLEASE SCROLL DOWN AND UP TO SEE DYNAMIC-HEADER BEHAVIOR</p>
     </div>
-    <div id="content" style="height:2000px;">
+    <div id="content" style="height:2000px; padding:.81em; ">
         <p>Jemand musste Josef K. verleumdet haben, denn ohne dass er etwas Böses getan hätte, wurde er eines Morgens verhaftet. »Wie ein Hund!</p>
 
         <img id="banner" src="filip-gielda-94858-2.jpg" />
