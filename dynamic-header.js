@@ -20,7 +20,7 @@ var DynamicHeader = (function() {
     var colorThiefLib;
     var colorThief;
     var color;
-    var TRANSITION = 'top 0.2s ease-in-out';
+    var TRANSITION = '0.2s ease-in-out';
 
     function windowHeight() {
         return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -182,8 +182,8 @@ var DynamicHeader = (function() {
             if (config.overlay) {
                 self.config.overlay = config.overlay;
             }
-            if (config.pickColorFromImgId) {
-                self.config.pickColorFromImgId = config.pickColorFromImgId;
+            if (config.pickBackgroundFromImgId) {
+                self.config.pickBackgroundFromImgId = config.pickBackgroundFromImgId;
                 loadColorThiefLib();
             }
             if (config.lightColor) {
@@ -215,10 +215,10 @@ var DynamicHeader = (function() {
     }
 
     function stealColor() {
-        if (self.config.pickColorFromImgId) {
-            var img = document.getElementById(self.config.pickColorFromImgId);
-            if (!img) {
-                console.error('Image with id=[' + self.config.pickColorFromImgId + '] could not be found in DOM');
+        if (self.config.pickBackgroundFromImgId) {
+            var img = document.getElementById(self.config.pickBackgroundFromImgId);
+            if (!img || !img.src) {
+                console.error('Image with id=[' + self.config.pickBackgroundFromImgId + '] could not be found in DOM');
             } else if (img.src) {
                 var image = new Image();
                 image.src = img.src;
@@ -227,10 +227,8 @@ var DynamicHeader = (function() {
                     header.style.background = 'rgb(' + color.join(',') + ')';
                     if (isDark() && self.config.lightColor) {
                         header.style.color = self.config.lightColor;
-                        console.log(header.style.color);
                     } else if (isLight() && self.config.darkColor) {
                         header.style.color = self.config.darkColor;
-                        console.log(header.style.color);
                     }
                     if (self.config.opacity) {
                         header.style.background = 'rgb(' + color.join(',') + ',' + self.config.opacity + ')';
@@ -281,9 +279,9 @@ var DynamicHeader = (function() {
          *  @function DynamicHeader.init(config);
          *  @param {String} config.headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
          *  @param {Number} config.delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
-         * @param {String} config.pickColorFromImgId - Specify the id of an image from which the dominant color will be extracted and being used as the background color for the header. Default is none. In order to get this working, color-thief.min.js must be placed in the same directory like dyntamic-header.js
-         * @param {String} config.darkColor - The color to use for text inside of a light header. Typically to be used in combination with pickColorFrom ImgId.
-         * @param {String} config.lightColor - The color to use for text inside of a dark header. Typically to be used in combination with pickColorFrom ImgId.
+         * @param {String} config.pickBackgroundFromImgId - Specify the id of an image from which the dominant color will be extracted and being used as the background color for the header. Default is none. In order to get this working, color-thief.min.js must be placed in the same directory like dyntamic-header.js
+         * @param {String} config.darkColor - The color to use for text inside of a light header. Typically to be used in combination with pickBackgroundFromImgId.
+         * @param {String} config.lightColor - The color to use for text inside of a dark header. Typically to be used in combination with pickBackgroundFrom ImgId.
          * @param {Number} config.opacity - Specify the opacity of the header background with a number from 0 to 1. Default is 1.
          * @param {Boolean} config.overlay - Specify if the header should be layed over the content without adding additional vertical space for the header at the top of the page. Default is false.
          *
