@@ -17,9 +17,6 @@ var DynamicHeader = (function() {
     var scrolled, lastScrollTop;
     var header, content, trim;
     var initialHeaderStyle;
-    var colorThiefLib;
-    var colorThief;
-    var color;
     var TRANSITION = '0.2s ease-in-out';
 
     function windowHeight() {
@@ -185,82 +182,14 @@ var DynamicHeader = (function() {
             if (config.headerId) {
                 self.config.headerId = config.headerId;
             }
-            if (config.overlay) {
-                self.config.overlay = config.overlay;
-            }
-            if (config.pickBackgroundFromImgId) {
-                self.config.pickBackgroundFromImgId = config.pickBackgroundFromImgId;
-                loadColorThiefLib();
-            }
-            if (config.lightColor) {
-                self.config.lightColor = config.lightColor;
-            }
-            if (config.darkColor) {
-                self.config.darkColor = config.darkColor;
-            }
-            if (config.opacity) {
-                self.config.opacity = config.opacity;
-            }
             if (config.delta) {
                 self.config.delta = config.delta;
             }
         }
     }
 
-    function getBrightness() {
-        //http://www.w3.org/TR/AERT#color-contrast
-        return (color[0] * 299 + color[1] * 587 + color[2] * 114) / 1000;
-    }
-
-    function isDark() {
-        return getBrightness() < 128;
-    }
-
-    function isLight() {
-        return isDark();
-    }
-
-    function stealColor() {
-        if (self.config.pickBackgroundFromImgId) {
-            var img = document.getElementById(self.config.pickBackgroundFromImgId);
-            if (!img || !img.src) {
-                console.error('Image with id=[' + self.config.pickBackgroundFromImgId + '] could not be found in DOM');
-            } else if (img.src) {
-                var image = new Image();
-                image.src = img.src;
-                image.onload = function() {
-                    color = colorThief.getColor(image);
-                    header.style.background = 'rgb(' + color.join(',') + ')';
-                    if (isDark() && self.config.lightColor) {
-                        header.style.color = self.config.lightColor;
-                    } else if (isLight() && self.config.darkColor) {
-                        header.style.color = self.config.darkColor;
-                    }
-                    if (self.config.opacity) {
-                        header.style.background = 'rgb(' + color.join(',') + ',' + self.config.opacity + ')';
-                    }
-                }
-            }
-        }
-    }
-
-    function makeColorThiefInstance() {
-        colorThief = new ColorThief();
-    }
-
-    function loadColorThiefLib() {
-        if (!colorThief) {
-            colorThiefLib = document.createElement('script');
-            colorThiefLib.type = 'text/javascript';
-            colorThiefLib.src = 'color-thief.min.js';
-            colorThiefLib.onload = makeColorThiefInstance;
-            document.getElementsByTagName('head')[0].appendChild(colorThiefLib);
-        }
-    }
-
     function onload() {
         selectHeader();
-        stealColor();
 
         if (header) {
             selectContent();
@@ -285,11 +214,6 @@ var DynamicHeader = (function() {
          *  @function DynamicHeader.init(config);
          *  @param {String} config.headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
          *  @param {Number} config.delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
-         * @param {String} config.pickBackgroundFromImgId - Specify the id of an image from which the dominant color will be extracted and being used as the background color for the header. Default is none. In order to get this working, color-thief.min.js must be placed in the same directory like dyntamic-header.js
-         * @param {String} config.darkColor - The color to use for text inside of a light header. Typically to be used in combination with pickBackgroundFromImgId.
-         * @param {String} config.lightColor - The color to use for text inside of a dark header. Typically to be used in combination with pickBackgroundFrom ImgId.
-         * @param {Number} config.opacity - Specify the opacity of the header background with a number from 0 to 1. Default is 1.
-         * @param {Boolean} config.overlay - Specify if the header should be layed over the content without adding additional vertical space for the header at the top of the page. Default is false.
          *
          */
         init: function(config) {
