@@ -3,7 +3,7 @@
 /*
  * DynamicHeader
  *
- * @version 1.1.1 2-Jun-2018
+ * @version 29-Aug-2018
  * @author Ulf Schneider
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
@@ -131,6 +131,12 @@ var DynamicHeader = (function() {
         }
     }
 
+
+    function showHeader() {
+        setHeaderTop(0);
+        trimContent();
+    }
+
     function moveHeader() {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 
@@ -140,7 +146,7 @@ var DynamicHeader = (function() {
         if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
             // if current position > last position AND scrolled past header height,
             // move the header out of the way
-            setHeaderTop(-(headerHeight + 1) + 'px');
+            setHeaderTop(-headerHeight + 'px');
         } else {
             if (scrollTop + windowHeight() < documentHeight()) {
                 setHeaderTop(0);
@@ -150,8 +156,7 @@ var DynamicHeader = (function() {
     }
 
     function onresize() {
-        trimHeader();
-        trimContent();
+        showHeader();
     }
 
     function onscroll() {
@@ -205,8 +210,7 @@ var DynamicHeader = (function() {
     //public API
     return {
         /*  Without any arguments, DynamicHeader.init() will search for a container
-         *  with id="header" and if that is not available, for a tag <header>
-         *  and will make that container the dynamic header.
+         *  with id="header" or a tag <header> and will make that container the dynamic header.
          *
          *  Alternative usage:
          *  @function DynamicHeader.init(config);
