@@ -120,18 +120,6 @@ var DynamicHeader = (function() {
         }
     }
 
-    function trimHeader() {
-        if (header) {
-            if (isHeaderHidden()) {
-                var headerHeight = getHeaderHeight();
-                //move the header out of the way, even if resizing the window
-                //leads to different height of header
-                setHeaderTop(-2 * headerHeight + 'px');
-            }
-        }
-    }
-
-
     function showHeader() {
         setHeaderTop(0);
         trimContent();
