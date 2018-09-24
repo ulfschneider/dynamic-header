@@ -1,0 +1,30 @@
+{
+  "name": "active-header",
+  "version": "0.1.0",
+  "description": "Dynamically show and hide the header section of your web page",
+  "main": "active-header.js",
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "collectCoverage": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ulfschneider/dynamic-header.git"
+  },
+  "keywords": [
+    "dynamic",
+    "active",
+    "header"
+  ],
+  "author": "Ulf Schneider",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ulfschneider/dynamic-header/issues"
+  },
+  "homepage": "https://github.com/ulfschneider/dynamic-header#readme",
+  "devDependencies": {
+    "jest": "^22.4.4",
+    "coveralls": "^3.0.2"
+  }
+}
