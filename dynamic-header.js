@@ -8,7 +8,7 @@
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
  */
-var DynamicHeader = (function() {
+DynamicHeader = (function() {
     //state
     var self = this;
     var scrolled, lastScrollTop;
@@ -152,6 +152,9 @@ var DynamicHeader = (function() {
     }
 
     function cleanUp() {
+        window.removeEventListener('resize', onresize);
+        window.removeEventListener('scroll', onscroll);
+        window.removeEventListener('load', onload);
         self.config = {
             delta: 5,
             headerId: 'header',
@@ -209,7 +212,11 @@ var DynamicHeader = (function() {
         init: function(config) {
             cleanUp();
             transferConfig(config);
-            window.addEventListener('load', onload);
+            if (document.readyState == 'complete') {
+                onload();
+            } else {
+                window.addEventListener('load', onload);
+            }
         },
         /*  @function DynamicHeader.destroy();
          *  Revert all changes that have been made by DynamicHeader.init();
