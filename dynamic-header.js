@@ -126,21 +126,24 @@ DynamicHeader = (function() {
     }
 
     function moveHeader() {
-        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        console.log(JSON.stringify(self.config));
+        if (!self.config.fix) {
+            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 
-        if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
+            if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
 
-        var headerHeight = getHeaderHeight();
-        if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
-            // if current position > last position AND scrolled past header height,
-            // move the header out of the way
-            setHeaderTop(-headerHeight + 'px');
-        } else {
-            if (scrollTop + windowHeight() < documentHeight()) {
-                setHeaderTop(0);
+            var headerHeight = getHeaderHeight();
+            if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+                // if current position > last position AND scrolled past header height,
+                // move the header out of the way
+                setHeaderTop(-headerHeight + 'px');
+            } else {
+                if (scrollTop + windowHeight() < documentHeight()) {
+                    setHeaderTop(0);
+                }
             }
+            lastScrollTop = scrollTop;
         }
-        lastScrollTop = scrollTop;
     }
 
     function onresize() {
@@ -158,6 +161,7 @@ DynamicHeader = (function() {
         self.config = {
             delta: 5,
             headerId: 'header',
+            fix: false
         }
         lastScrollTop = 0;
         scrolled = false;
@@ -177,6 +181,9 @@ DynamicHeader = (function() {
             }
             if (config.delta) {
                 self.config.delta = config.delta;
+            }
+            if (config.fix) {
+                self.config.fix = config.fix;
             }
         }
     }
