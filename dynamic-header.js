@@ -126,7 +126,6 @@ DynamicHeader = (function() {
     }
 
     function moveHeader() {
-        console.log(JSON.stringify(self.config));
         if (!self.config.fix) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 
