@@ -29,7 +29,7 @@ DynamicHeader = (function() {
     }
 
     function getHeaderHeight() {
-        return header.clientHeight;
+        return header.offsetHeight;
     }
 
     function isHeaderHidden() {
@@ -140,8 +140,8 @@ DynamicHeader = (function() {
         if (!self.config.fix) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
-
             var headerHeight = getHeaderHeight();
+
             if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
