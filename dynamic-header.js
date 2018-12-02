@@ -3,7 +3,7 @@
 /*
  * DynamicHeader
  *
- * @version 29-Aug-2018
+ * @version 2-dec-2018
  * @author Ulf Schneider
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
@@ -101,6 +101,17 @@ DynamicHeader = (function() {
         }
     }
 
+    function addClassToHeader(cssClass) {
+        var classes = header.className.split(' ');
+        if (classes.indexOf(cssClass) == -1) {
+            header.className += ' ' + cssClass;
+        }
+    }
+
+    function removeClassFromHeader(cssClass) {
+        header.className = header.className.replace(new RegExp(cssClass, 'g'), '');
+    }
+
     function insertTrim() {
         //it´s more unobtrusive to insert a trim div with a specific height
         //before the content instead of setting a top-margin for the
@@ -128,7 +139,6 @@ DynamicHeader = (function() {
     function moveHeader() {
         if (!self.config.fix) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
 
             var headerHeight = getHeaderHeight();
@@ -139,6 +149,12 @@ DynamicHeader = (function() {
             } else {
                 if (scrollTop + windowHeight() < documentHeight()) {
                     setHeaderTop(0);
+
+                    if (scrollTop >= headerHeight) {
+                        addClassToHeader('slide-in');
+                    } else {
+                        removeClassFromHeader('slide-in');
+                    }
                 }
             }
             lastScrollTop = scrollTop;

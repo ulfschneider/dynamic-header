@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Dynamic Header Example</title>
+
     <script src="dynamic-header.min.js"></script>
     <script>
         DynamicHeader.init();
         /*  Without any arguments, DynamicHeader.init() will search for a container
          *  with id="header" or a tag <header> and will make that container the dynamic header.
+         *  Whenever the header is made visible and there is the possibility to scroll down the document
+         *  for at leader header-height pixels, a css class 'slide-in' is added to the header. This
+         *  css class may be used to add a bottom border or something else to the header.
          *
          *  Alternative usage:
          *  @function DynamicHeader.init(config);
