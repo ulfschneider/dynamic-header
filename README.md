@@ -41,6 +41,6 @@ The DynamicHeader can be configured by providing a settings object to the init r
 DynamicHeader.init(settings);
 </pre>
 
-* <code>settings.headerId String ?</code>The id of the header object. If omitted <code><header></code> tag will be selected to apply the DynamicHeader behavior.
-* <code>settings.delta Number ?</code>A user has to scroll up the given amount of pixels in order to activate the dynamic header behavior. Default is 5.
-* <code>settings.fix Boolean ?</code>If true, the header will be fixed and not active.
+* <code>settings.headerId</code> String ? The id of the header object. If omitted the html header tag (if existing) or any dom element with an id named 'header' will be selected to apply the DynamicHeader behavior.
+* <code>settings.delta</code> Number ? A user has to scroll up the given amount of pixels in order to activate the dynamic header behavior. Default is 5.
+* <code>settings.fix</code> Boolean ? If true, the header will be fixed and not active.
