@@ -30,5 +30,17 @@ In case you don´t have a Node project and simply want to use the dynamic header
 Use you made the module/library available, you can use the dynamic header as follows:
 
 <pre>
-DynamicHeader.init(settings);
+DynamicHeader.init();
+</pre>
+
+## Settings
+
+The DynamicHeader can be configured by providing a settings object to the init routine.
+
 <pre>
+DynamicHeader.init(settings);
+</pre>
+
+* <code>settings.headerId String ?</code>The id of the header object. If omitted <code><header></code> tag will be selected to apply the DynamicHeader behavior.
+* <code>settings.delta Number ?</code>A user has to scroll up the given amount of pixels in order to activate the dynamic header behavior. Default is 5.
+* <code>settings.fix Boolean ?</code>If true, the header will be fixed and not active.
