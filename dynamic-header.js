@@ -3,7 +3,7 @@
 /*
  * DynamicHeader
  *
- * @version 2-dec-2018
+ * @version 2-Feb-2019
  * @author Ulf Schneider
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
@@ -97,7 +97,7 @@ DynamicHeader = (function() {
     function trimContent() {
         if (trim) {
             var headerHeight = getHeaderHeight();
-            setContentTrim(headerHeight + 'px');
+            setContentTrim(headerHeight - 1 + 'px');
         }
     }
 
