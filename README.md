@@ -19,7 +19,7 @@ or, alternatively
 
 <pre>
 import DynamicHeader from 'dheader';
-</prex>
+</pre>
 
 ## Plain old Web Page
 
