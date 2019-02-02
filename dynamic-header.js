@@ -248,3 +248,26 @@ DynamicHeader = (function() {
         }
     }
 })();
+
+//////// Node Module Interface
+
+try {
+    if (module) {
+        module.exports = {
+            init: function(settings) {
+                if (!this.dheader) {
+                    this.dheader = DynamicHeader;
+                }
+                this.dheader.init(settings);
+            },
+            destroy: function() {
+                if (this.dheader) {
+                    this.dheader.destroy();
+                }
+            }
+        }
+    }
+} catch (e) {
+    //in non-node environment module is not defined and therefore
+    //we will not export anything
+}

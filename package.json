@@ -1,8 +1,8 @@
 {
     "name": "dheader",
-    "version": "0.0.12",
+    "version": "0.0.17",
     "description": "A dynamic header for web pages",
-    "main": "dheader.js",
+    "main": "dynamic-header.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
