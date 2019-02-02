@@ -2,7 +2,7 @@
 
 Make the header of your web pages dynamic.
 
-<img src="https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.gif"/ style="max-width:627px">
+![](https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.gif)
 
 ## Node
 Install in your Node project with
