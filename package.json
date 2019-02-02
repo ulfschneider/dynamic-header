@@ -1,0 +1,24 @@
+{
+    "name": "dheader",
+    "version": "0.0.12",
+    "description": "A dynamic header for web pages",
+    "main": "dheader.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ulfschneider/dynamic-header.git"
+    },
+    "keywords": [
+        "Dynamic",
+        "Header",
+        "Web"
+    ],
+    "author": "Ulf Schneider",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ulfschneider/dynamic-header/issues"
+    },
+    "homepage": "https://github.com/ulfschneider/dynamic-header#readme"
+}
