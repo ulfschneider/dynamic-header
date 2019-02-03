@@ -10,15 +10,13 @@
         DynamicHeader.init();
         /*  Without any arguments, DynamicHeader.init() will search for a container
          *  with id="header" or a tag <header> and will make that container the dynamic header.
-         *  Whenever the header is made visible and there is the possibility to scroll down the document
-         *  for at leader header-height pixels, a css class 'slide-in' is added to the header. This
-         *  css class may be used to add a bottom border or something else to the header.
          *
          *  Alternative usage:
          *  @function DynamicHeader.init(config);
          *  @param {String} config.headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
          *  @param {Number} config.delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
-         *  @param {Boolean} config.fix - If set to true, the header will never scroll out of the way . Default is false.
+         *  @param {Boolean} config.fixed - If set to true, the header will never slide out of the way. Default is false.
+         *  @param {String} config.slideIn - Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is 'slide-in'.
          *
          *  @function DynamicHeader.destroy();
          *  Revert all changes that have been made by DynamicHeader.init();
