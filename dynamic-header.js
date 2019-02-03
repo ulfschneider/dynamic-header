@@ -104,7 +104,10 @@ DynamicHeader = (function() {
     function addClassToHeader(cssClass) {
         var classes = header.className.split(' ');
         if (classes.indexOf(cssClass) == -1) {
-            header.className += ' ' + cssClass;
+            if (header.className.length) {
+                header.className += ' ';
+            }
+            header.className += cssClass;
         }
     }
 
@@ -137,7 +140,7 @@ DynamicHeader = (function() {
     }
 
     function moveHeader() {
-        if (!self.config.fix) {
+        if (!self.config.fixed) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
             var headerHeight = getHeaderHeight();
@@ -150,10 +153,12 @@ DynamicHeader = (function() {
                 if (scrollTop + windowHeight() < documentHeight()) {
                     setHeaderTop(0);
 
-                    if (scrollTop >= headerHeight) {
-                        addClassToHeader('slide-in');
-                    } else {
-                        removeClassFromHeader('slide-in');
+                    if (self.config.slideIn) {
+                        if (scrollTop >= headerHeight) {
+                            addClassToHeader(self.config.slideIn);
+                        } else {
+                            removeClassFromHeader(self.config.slideIn);
+                        }
                     }
                 }
             }
@@ -176,7 +181,8 @@ DynamicHeader = (function() {
         self.config = {
             delta: 5,
             headerId: 'header',
-            fix: false
+            fix: false,
+            slideIn: 'slide-in'
         }
         lastScrollTop = 0;
         scrolled = false;
@@ -197,8 +203,11 @@ DynamicHeader = (function() {
             if (config.delta) {
                 self.config.delta = config.delta;
             }
-            if (config.fix) {
-                self.config.fix = config.fix;
+            if (config.fix || config.fixed) {
+                self.config.fixed = config.fix || config.fixed;
+            }
+            if (config.slideIn) {
+                self.config.slideIn = config.slideIn;
             }
         }
     }
