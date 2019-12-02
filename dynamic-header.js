@@ -137,6 +137,7 @@ DynamicHeader = (function() {
     function showHeader() {
         setHeaderTop(0);
         trimContent();
+        callback();
     }
 
     function moveHeader() {
@@ -149,6 +150,7 @@ DynamicHeader = (function() {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
                 setHeaderTop(-headerHeight + 'px');
+                callback();
             } else {
                 if (scrollTop + windowHeight() < documentHeight()) {
                     setHeaderTop(0);
@@ -160,6 +162,7 @@ DynamicHeader = (function() {
                             removeClassFromHeader(self.config.slideIn);
                         }
                     }
+                    callback();
                 }
             }
             lastScrollTop = scrollTop;
@@ -172,6 +175,12 @@ DynamicHeader = (function() {
 
     function onscroll() {
         scrolled = true;
+    }
+
+    function callback() {
+        if (self.config.callback) {
+            self.config.callback(header);
+        }
     }
 
     function cleanUp() {
@@ -208,6 +217,9 @@ DynamicHeader = (function() {
             }
             if (config.slideIn) {
                 self.config.slideIn = config.slideIn;
+            }
+            if (config.callback) {
+                self.config.callback = config.callback;
             }
         }
     }
