@@ -132,12 +132,12 @@ DynamicHeader = (function() {
             }
             trim = null;
         }
+        callback();
     }
 
     function showHeader() {
         setHeaderTop(0);
         trimContent();
-        callback();
     }
 
     function moveHeader() {
