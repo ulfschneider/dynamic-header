@@ -142,18 +142,21 @@ DynamicHeader = (function() {
     }
 
     function hideHeader() {
+        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         var headerHeight = getHeaderHeight();
-        setHeaderTop(-headerHeight + 'px');
-        callback();
+        console.log(scrollTop);
+        if (scrollTop > headerHeight) {
+            setHeaderTop(-headerHeight + 'px');
+            callback();
+        }
     }
 
     function moveHeader() {
         if (!self.config.fixed && !pauseMove) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
-            var headerHeight = getHeaderHeight();
 
-            if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
+            if (scrollTop > lastScrollTop) {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
                 hideHeader();
@@ -162,7 +165,7 @@ DynamicHeader = (function() {
                     setHeaderTop(0);
 
                     if (self.config.slideIn) {
-                        if (scrollTop >= headerHeight) {
+                        if (scrollTop >= getHeaderHeight()) {
                             addClassToHeader(self.config.slideIn);
                         } else {
                             removeClassFromHeader(self.config.slideIn);
