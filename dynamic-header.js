@@ -3,7 +3,7 @@
 /*
  * DynamicHeader
  *
- * @version 2-Feb-2019
+ * @version 3-Jan-2020
  * @author Ulf Schneider
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
@@ -14,6 +14,7 @@ DynamicHeader = (function() {
     var scrolled, lastScrollTop;
     var header, content, trim;
     var initialHeaderStyle;
+    var pauseMove = false;
     var TRANSITION = '0.2s ease-in-out';
 
     function windowHeight() {
@@ -140,8 +141,14 @@ DynamicHeader = (function() {
         trimContent();
     }
 
+    function hideHeader() {
+        var headerHeight = getHeaderHeight();
+        setHeaderTop(-headerHeight + 'px');
+        callback();
+    }
+
     function moveHeader() {
-        if (!self.config.fixed) {
+        if (!self.config.fixed && !pauseMove) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
             var headerHeight = getHeaderHeight();
@@ -149,8 +156,7 @@ DynamicHeader = (function() {
             if (scrollTop > lastScrollTop && scrollTop > headerHeight) {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
-                setHeaderTop(-headerHeight + 'px');
-                callback();
+                hideHeader();
             } else {
                 if (scrollTop + windowHeight() < documentHeight()) {
                     setHeaderTop(0);
@@ -169,12 +175,22 @@ DynamicHeader = (function() {
         }
     }
 
-    function onresize() {
+    function onResize() {
         showHeader();
     }
 
-    function onscroll() {
+    function onScroll() {
         scrolled = true;
+    }
+
+    function onClick() {
+        if (self.config.hideonClick) {
+            pauseMove = true;
+            hideHeader();
+            setTimeout(function() {
+                pauseMove = false;
+            }, self.config.pauseMoveDuration);
+        }
     }
 
     function callback() {
@@ -184,15 +200,13 @@ DynamicHeader = (function() {
     }
 
     function cleanUp() {
-        window.removeEventListener('resize', onresize);
-        window.removeEventListener('scroll', onscroll);
-        window.removeEventListener('load', onload);
-        self.config = {
-            delta: 5,
-            headerId: 'header',
-            fix: false,
-            slideIn: 'slide-in'
+        window.removeEventListener('resize', onResize);
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('load', onLoad);
+        if (header) {
+            header.removeEventListener('click', onClick);
         }
+        transferConfig(); //reset config
         lastScrollTop = 0;
         scrolled = false;
         revertHeaderStyle();
@@ -206,32 +220,37 @@ DynamicHeader = (function() {
 
     function transferConfig(config) {
         if (config) {
-            if (config.headerId) {
-                self.config.headerId = config.headerId;
-            }
-            if (config.delta) {
-                self.config.delta = config.delta;
-            }
-            if (config.fix || config.fixed) {
-                self.config.fixed = config.fix || config.fixed;
-            }
-            if (config.slideIn) {
-                self.config.slideIn = config.slideIn;
-            }
-            if (config.callback) {
-                self.config.callback = config.callback;
-            }
+            self.config = config;
+        } else {
+            self.config = {};
+        }
+        self.config.fixed = self.config.fix || self.config.fixed;
+        if (typeof self.config.headerId == 'undefined') {
+            self.config.headerId = 'header';
+        }
+        if (typeof self.config.delta == 'undefined') {
+            self.config.delta = 5;
+        }
+        if (typeof self.config.hideonClick == 'undefined') {
+            self.config.hideonClick = true;
+        }
+        if (typeof self.config.pauseMoveDuration == 'undefined') {
+            self.config.pauseMoveDuration = 1000;
+        }
+        if (typeof self.config.slideIn == 'undefined') {
+            self.config.slideIn = 'slide-in';
         }
     }
 
-    function onload() {
+    function onLoad() {
         selectHeader();
 
         if (header) {
             selectContent();
             insertTrim();
-            window.addEventListener('resize', onresize);
-            window.addEventListener('scroll', onscroll);
+            window.addEventListener('resize', onResize);
+            window.addEventListener('scroll', onScroll);
+            header.addEventListener('click', onClick);
             setInterval(function() {
                 if (scrolled) {
                     scrolled = false;
@@ -256,9 +275,9 @@ DynamicHeader = (function() {
             cleanUp();
             transferConfig(config);
             if (document.readyState == 'complete') {
-                onload();
+                onLoad();
             } else {
-                window.addEventListener('load', onload);
+                window.addEventListener('load', onLoad);
             }
         },
         /*  @function DynamicHeader.destroy();
@@ -271,6 +290,7 @@ DynamicHeader = (function() {
 })();
 
 //////// Node Module Interface
+
 
 try {
     if (module) {
