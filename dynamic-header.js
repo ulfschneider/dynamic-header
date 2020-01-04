@@ -3,8 +3,8 @@
  *
  * A dynamic header for web pages.
  * 
- * <img src="https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.gif"/>
- *
+ * Please review the [Dynamic Header Playground](https://htmlpreview.github.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html) to see the usage.
+ * 
  * Install it in your Node project with 
  * <pre>
  * npm i dheader
@@ -26,9 +26,7 @@
  * 
  * <pre>
  * <script src="dynamic-header.min.js"></script>
- * </pre>
- * https://htmlpreview.github.io/?https://github.com/ulfschneider/horiz-gauge/blob/master/horiz-gauge-playground.html
- * Please review https://htmlpreview.githug.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html to see the usage.
+ * </pre> 
  *  Without any arguments, <code>DynamicHeader.init()</code> will search for a container
  *  with <code>id="header"</code> or a tag <code>header</code> and will make that container the dynamic header.
  */
