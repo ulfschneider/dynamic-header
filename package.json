@@ -1,10 +1,11 @@
 {
     "name": "dheader",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "A dynamic header for web pages",
     "main": "dynamic-header.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "minify dynamic-header.js > dynamic-header.min.js && documentation build dynamic-header.js -f md > README.md"
     },
     "repository": {
         "type": "git",
@@ -20,5 +21,9 @@
     "bugs": {
         "url": "https://github.com/ulfschneider/dynamic-header/issues"
     },
-    "homepage": "https://github.com/ulfschneider/dynamic-header#readme"
+    "homepage": "https://github.com/ulfschneider/dynamic-header#readme",
+    "devDependencies": {
+        "documentation": "^12.1.4",
+        "minify": "^5.0.0"
+    }
 }

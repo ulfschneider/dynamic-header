@@ -1,20 +1,49 @@
-/* minifyOnSave, filenamePattern: ./$1.min.$2 */
-
-/*
+/**
  * DynamicHeader
  *
  * @version 3-Jan-2020
  * @author Ulf Schneider
  * @link https://github.com/ulfschneider/dynamic-header
  * @license MIT
+ *
+ * A dynamic header for web pages.
+ * 
+ * <img src="https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.gif"/>
+ *
+ * Install it in your Node project with 
+ * <pre>
+ * npm i dheader
+ * </pre>
+ * 
+ * and use it inside your code via 
+ * 
+ * <pre>
+ * const dheader = require('dheader');
+ * </pre>
+ * 
+ * or, alternatively 
+ * 
+ * <pre>
+ * import dheader from 'dheader';
+ * </pre>
+ * 
+ * You can also use it without node, by embedding the script <code>dynamic-header.min.js</code> in your web page.
+ * 
+ * <pre>
+ * <script src="dynamic-header.min.js"></script>
+ * </pre>
+ * 
+ * Please review https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.html to see the usage.
+ *  Without any arguments, <code>DynamicHeader.init()</code> will search for a container
+ *  with <code>id="header"<code> or a tag <code>header</code> and will make that container the dynamic header.
  */
-DynamicHeader = (function() {
+DynamicHeader = (function () {
     //state
     var self = this;
     var scrolled, lastScrollTop;
     var header, content, trim;
     var initialHeaderStyle;
-    var pauseMove = false;
+    var pauseMovement = false;
     var TRANSITION = '0.2s ease-in-out';
 
     function windowHeight() {
@@ -36,6 +65,10 @@ DynamicHeader = (function() {
     function isHeaderHidden() {
         var top = parseInt(header.style.top);
         return top < 0;
+    }
+
+    function isHeaderVisible() {
+        return !isHeaderHidden();
     }
 
     function modifyHeaderStyle() {
@@ -96,6 +129,7 @@ DynamicHeader = (function() {
     }
 
     function trimContent() {
+
         if (trim) {
             var headerHeight = getHeaderHeight();
             setContentTrim(headerHeight - 1 + 'px');
@@ -133,26 +167,40 @@ DynamicHeader = (function() {
             }
             trim = null;
         }
-        callback();
     }
 
     function showHeader() {
-        setHeaderTop(0);
         trimContent();
+        if (isHeaderHidden()) {
+            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+            if (scrollTop + windowHeight() < documentHeight()) {
+                setHeaderTop(0);
+                if (self.config.slideIn) {
+                    if (scrollTop >= getHeaderHeight()) {
+                        addClassToHeader(self.config.slideIn);
+                    } else {
+                        removeClassFromHeader(self.config.slideIn);
+                    }
+                }
+                callback();
+            }
+        }
     }
 
     function hideHeader() {
-        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        var headerHeight = getHeaderHeight();
-        console.log(scrollTop);
-        if (scrollTop > headerHeight) {
-            setHeaderTop(-headerHeight + 'px');
-            callback();
+        if (isHeaderVisible()) {
+            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+            var headerHeight = getHeaderHeight();
+            if (scrollTop > headerHeight) {
+                setHeaderTop(-headerHeight + 'px');
+                callback();
+            }
         }
     }
 
     function moveHeader() {
-        if (!self.config.fixed && !pauseMove) {
+        if (!self.config.fixed && !pauseMovement) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
 
@@ -161,18 +209,7 @@ DynamicHeader = (function() {
                 // move the header out of the way
                 hideHeader();
             } else {
-                if (scrollTop + windowHeight() < documentHeight()) {
-                    setHeaderTop(0);
-
-                    if (self.config.slideIn) {
-                        if (scrollTop >= getHeaderHeight()) {
-                            addClassToHeader(self.config.slideIn);
-                        } else {
-                            removeClassFromHeader(self.config.slideIn);
-                        }
-                    }
-                    callback();
-                }
+                showHeader();
             }
             lastScrollTop = scrollTop;
         }
@@ -187,11 +224,11 @@ DynamicHeader = (function() {
     }
 
     function onClick() {
-        if (self.config.hideonClick) {
-            pauseMove = true;
+        if (self.config.hideonClick && !self.config.fixed) {
+            pauseMovement = true;
             hideHeader();
-            setTimeout(function() {
-                pauseMove = false;
+            setTimeout(function () {
+                pauseMovement = false;
             }, self.config.pauseMoveDuration);
         }
     }
@@ -254,7 +291,7 @@ DynamicHeader = (function() {
             window.addEventListener('resize', onResize);
             window.addEventListener('scroll', onScroll);
             header.addEventListener('click', onClick);
-            setInterval(function() {
+            setInterval(function () {
                 if (scrolled) {
                     scrolled = false;
                     moveHeader();
@@ -265,16 +302,7 @@ DynamicHeader = (function() {
 
     //public API
     return {
-        /*  Without any arguments, DynamicHeader.init() will search for a container
-         *  with id="header" or a tag <header> and will make that container the dynamic header.
-         *
-         *  Alternative usage:
-         *  @function DynamicHeader.init(config);
-         *  @param {String} config.headerId - Specify the id of the container you want to make the dynamic header. Default is 'header'.
-         *  @param {Number} config.delta -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on the scrolling. Default is 5.
-         *
-         */
-        init: function(config) {
+        init: function (config) {
             cleanUp();
             transferConfig(config);
             if (document.readyState == 'complete') {
@@ -283,10 +311,7 @@ DynamicHeader = (function() {
                 window.addEventListener('load', onLoad);
             }
         },
-        /*  @function DynamicHeader.destroy();
-         *  Revert all changes that have been made by DynamicHeader.init();
-         */
-        destroy: function() {
+        destroy: function () {
             cleanUp();
         }
     }
@@ -294,17 +319,29 @@ DynamicHeader = (function() {
 
 //////// Node Module Interface
 
-
 try {
     if (module) {
         module.exports = {
-            init: function(settings) {
+            /**
+             * @param {*} [settings]
+             * @param {String} [settings.headerId] - Specify the id of the container you want to make the dynamic header. Default is 'header'. If not specified will search for the html <code>header</code> tag.
+            *  @param {Number} [settings.delta] -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 5.
+            *  @param {Boolean} [settings.fixed] - If set to true, the header will never slide out of the way. Default is false.
+            *  @param {Boolean} [settings.hideOnClick] - If set to true, the header will slide out of the way when a click occurred inside the header. Default is true. Will be ignored when config.fixed is true.
+            *  @param {Number} [settings.pauseMoveDuration] - When the header is hidden away after a click, the sliding mechanism is paused for a duration of 1000 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
+            *  @param {String} [settings.slideIn] - Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is 'slide-in'.
+            *  @param {Object} [settings.callback] - A callback function to be called whenever the header changes. The header is given as an argument into the callback.
+             */
+            init: function (settings) {
                 if (!this.dheader) {
                     this.dheader = DynamicHeader;
                 }
                 this.dheader.init(settings);
             },
-            destroy: function() {
+            /**
+             * Revert all changes that have been made by DynamicHeader.init();
+             */
+            destroy: function () {
                 if (this.dheader) {
                     this.dheader.destroy();
                 }
