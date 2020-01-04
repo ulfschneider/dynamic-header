@@ -1,11 +1,6 @@
 /**
  * DynamicHeader
  *
- * @version 3-Jan-2020
- * @author Ulf Schneider
- * @link https://github.com/ulfschneider/dynamic-header
- * @license MIT
- *
  * A dynamic header for web pages.
  * 
  * <img src="https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.gif"/>
