@@ -27,10 +27,10 @@
  * <pre>
  * <script src="dynamic-header.min.js"></script>
  * </pre>
- * 
- * Please review https://raw.githubusercontent.com/ulfschneider/dynamic-header/master/dynamic-header.html to see the usage.
+ * https://htmlpreview.github.io/?https://github.com/ulfschneider/horiz-gauge/blob/master/horiz-gauge-playground.html
+ * Please review https://htmlpreview.githug.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html to see the usage.
  *  Without any arguments, <code>DynamicHeader.init()</code> will search for a container
- *  with <code>id="header"<code> or a tag <code>header</code> and will make that container the dynamic header.
+ *  with <code>id="header"</code> or a tag <code>header</code> and will make that container the dynamic header.
  */
 DynamicHeader = (function () {
     //state
@@ -324,7 +324,7 @@ try {
             *  @param {Boolean} [settings.fixed] - If set to true, the header will never slide out of the way. Default is false.
             *  @param {Boolean} [settings.hideOnClick] - If set to true, the header will slide out of the way when a click occurred inside the header. Default is true. Will be ignored when config.fixed is true.
             *  @param {Number} [settings.pauseMoveDuration] - When the header is hidden away after a click, the sliding mechanism is paused for a duration of 1000 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
-            *  @param {String} [settings.slideIn] - Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is 'slide-in'.
+            *  @param {String} [settings.slideIn] - Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is <code>'slide-in'</code>.
             *  @param {Object} [settings.callback] - A callback function to be called whenever the header changes. The header is given as an argument into the callback.
              */
             init: function (settings) {
