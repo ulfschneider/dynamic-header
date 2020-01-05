@@ -13,13 +13,13 @@
  * and use it inside your code via 
  * 
  * <pre>
- * const dheader = require('dheader');
+ * const DynamicHeader = require('dheader');
  * </pre>
  * 
  * or, alternatively 
  * 
  * <pre>
- * import dheader from 'dheader';
+ * import DynamicHeader from 'dheader';
  * </pre>
  * 
  * You can also use it without node, by embedding the script <code>dynamic-header.min.js</code> in your web page.
