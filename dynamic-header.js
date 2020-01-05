@@ -214,7 +214,7 @@ DynamicHeader = (function () {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
                 hideHeader();
-            } else {
+            } else {                
                 showHeader();
             }
             lastScrollTop = scrollTop;
@@ -226,13 +226,25 @@ DynamicHeader = (function () {
     }
 
     function onScroll() {
-        scrolled = true;
+        moveHeader();        
     }
 
     function onClick() {
         if (self.config.hideOnClick && !self.config.fixed) {
             startPause();
             hideHeader();
+        }
+    }
+
+    function onLoad() {
+        selectHeader();
+
+        if (header) {
+            selectContent();
+            insertTrim();
+            window.addEventListener('resize', onResize);
+            window.addEventListener('scroll', onScroll);
+            header.addEventListener('click', onClick);
         }
     }
 
@@ -252,7 +264,7 @@ DynamicHeader = (function () {
         clearPause();
         transferConfig(); //reset config
         lastScrollTop = 0;
-        scrolled = false;
+        scrolled = 0;
         revertHeaderStyle();
         if (trim) {
             trim.remove();
@@ -285,24 +297,6 @@ DynamicHeader = (function () {
         }
         if (typeof self.config.slideIn == 'undefined') {
             self.config.slideIn = 'slide-in';
-        }
-    }
-
-    function onLoad() {
-        selectHeader();
-
-        if (header) {
-            selectContent();
-            insertTrim();
-            window.addEventListener('resize', onResize);
-            window.addEventListener('scroll', onScroll);
-            header.addEventListener('click', onClick);
-            setInterval(function () {
-                if (scrolled) {
-                    scrolled = false;
-                    moveHeader();
-                }
-            }, 250);
         }
     }
 
