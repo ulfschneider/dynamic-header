@@ -36,7 +36,7 @@ DynamicHeader = (function () {
     var scrolled, lastScrollTop;
     var header, content, trim;
     var initialHeaderStyle;
-    var pauseMovement = false;
+    var pauseStart;
     var TRANSITION = '0.2s ease-in-out';
 
     function windowHeight() {
@@ -192,8 +192,21 @@ DynamicHeader = (function () {
         }
     }
 
+    function startPause() {
+        pauseStart = (new Date()).getTime();
+    }
+
+    function clearPause() {
+        pauseStart = 0;
+    }
+
+    function isPaused() {
+        let now = (new Date()).getTime();
+        return (now - pauseStart <= self.config.pauseDuration);
+    }
+
     function moveHeader() {
-        if (!self.config.fixed && !pauseMovement) {
+        if (!self.config.fixed && !isPaused()) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
             if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
 
@@ -217,12 +230,9 @@ DynamicHeader = (function () {
     }
 
     function onClick() {
-        if (self.config.hideonClick && !self.config.fixed) {
-            pauseMovement = true;
+        if (self.config.hideOnClick && !self.config.fixed) {
+            startPause();
             hideHeader();
-            setTimeout(function () {
-                pauseMovement = false;
-            }, self.config.pauseDuration);
         }
     }
 
@@ -239,6 +249,7 @@ DynamicHeader = (function () {
         if (header) {
             header.removeEventListener('click', onClick);
         }
+        clearPause();
         transferConfig(); //reset config
         lastScrollTop = 0;
         scrolled = false;
@@ -266,8 +277,8 @@ DynamicHeader = (function () {
         if (typeof self.config.delta == 'undefined') {
             self.config.delta = 5;
         }
-        if (typeof self.config.hideonClick == 'undefined') {
-            self.config.hideonClick = true;
+        if (typeof self.config.hideOnClick == 'undefined') {
+            self.config.hideOnClick = true;
         }
         if (typeof self.config.pauseDuration == 'undefined') {
             self.config.pauseDuration = 1000;
