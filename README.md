@@ -13,9 +13,9 @@ DynamicHeader
 
 A dynamic header for web pages.
 
-Please review the [Dynamic Header Playground][5] to see the usage.
+Please review the [DynamicHeader Playground][5] to see the usage.
 
-Install it in your Node project with 
+Install DynamicHeader in your Node project with 
 
 <pre>
 npm i dheader
@@ -57,7 +57,7 @@ You can also use it without node, by embedding the script <code>dynamic-header.m
 
 ## destroy
 
-Revert all changes that have been made by DynamicHeader.init();
+Revert all changes that have been made by DynamicHeader;
 
 [1]: #dynamicheader
 

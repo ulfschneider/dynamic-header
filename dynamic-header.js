@@ -3,9 +3,9 @@
  *
  * A dynamic header for web pages.
  * 
- * Please review the [Dynamic Header Playground](https://htmlpreview.github.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html) to see the usage.
+ * Please review the [DynamicHeader Playground](https://htmlpreview.github.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html) to see the usage.
  * 
- * Install it in your Node project with 
+ * Install DynamicHeader in your Node project with 
  * <pre>
  * npm i dheader
  * </pre>
@@ -342,7 +342,7 @@ try {
                 this.dheader.init(settings);
             },
             /**
-             * Revert all changes that have been made by DynamicHeader.init();
+             * Revert all changes that have been made by DynamicHeader;
              */
             destroy: function () {
                 if (this.dheader) {

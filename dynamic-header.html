@@ -3,17 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Header Example</title>
+    <title>DynamicHeader Example</title>
 
     <script src="dynamic-header.min.js"></script>
-    <script>
-        DynamicHeader.init({ callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (header.style.top == '0px')); } });
-    </script>
 </head>
 
 <body style="line-height:1.62em;">
     <header style="background:#333; color:white;  padding:1.62rem">
-        PLEASE SCROLL DOWN AND UP TO SEE DYNAMIC-HEADER BEHAVIOR
+        PLEASE SCROLL DOWN AND UP TO SEE DYNAMIC HEADER BEHAVIOR
     </header>
     <div id="content" style="padding:1.62rem;">
         <p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a
@@ -136,5 +133,8 @@
             fifteen years of service Gregor had never once yet been ill.</p>
     </div>
 </body>
+<script>
+    DynamicHeader.init({ callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (header.style.top == '0px')); } });
+</script>
 
 </html>
