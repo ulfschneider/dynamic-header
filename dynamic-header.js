@@ -57,6 +57,7 @@ DynamicHeader = (function () {
 
     function isHeaderHidden() {
         var top = parseInt(header.style.top);
+        console.log(top);
         return top < 0;
     }
 
@@ -235,7 +236,7 @@ DynamicHeader = (function () {
     function onClick() {
         if (config.hideOnClick && !config.fixed) {
             startPause();
-            hideHeader();
+            setTimeout(hideHeader, config.pauseDuration);
         }
     }
 
@@ -290,13 +291,13 @@ DynamicHeader = (function () {
             config.headerId = 'header';
         }
         if (typeof config.delta == 'undefined') {
-            config.delta = 10;
+            config.delta = 25;
         }
         if (typeof config.hideOnClick == 'undefined') {
             config.hideOnClick = true;
         }
         if (typeof config.pauseDuration == 'undefined') {
-            config.pauseDuration = 1000;
+            config.pauseDuration = 250;
         }
         if (typeof config.slideIn == 'undefined') {
             config.slideIn = 'slide-in';
@@ -328,10 +329,10 @@ try {
             /**
              * @param {*} [settings]
              * @param {String} [settings.headerId] - Specify the id of the container you want to make the dynamic header. Default is 'header'. If not specified will search for the html <code>header</code> tag.
-            *  @param {Number} [settings.delta] -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 10.
+            *  @param {Number} [settings.delta] -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 25.
             *  @param {Boolean} [settings.fixed] - If set to true, the header will never slide out of the way. Default is false.
             *  @param {Boolean} [settings.hideOnClick] - If set to true, the header will slide out of the way when a click occurred inside the header. Default is true. Will be ignored when config.fixed is true.
-            *  @param {Number} [settings.pauseDuration] - When the header is hidden away after a click, the sliding mechanism is paused for a duration of 1000 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
+            *  @param {Number} [settings.pauseDuration] - When the header is hidden away after a click, the sliding mechanism is paused for a duration of 250 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
             *  @param {String} [settings.slideIn] - Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is <code>'slide-in'</code>.
             *  @param {Object} [settings.callback] - A callback function to be called whenever the header changes. The header is given as an argument into the callback.
              */

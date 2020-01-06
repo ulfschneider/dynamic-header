@@ -48,10 +48,10 @@ You can also use it without node, by embedding the script <code>dynamic-header.m
 
 -   `settings` **any?** 
     -   `settings.headerId` **[String][6]?** Specify the id of the container you want to make the dynamic header. Default is 'header'. If not specified will search for the html <code>header</code> tag.
-    -   `settings.delta` **[Number][7]?**  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 10.
+    -   `settings.delta` **[Number][7]?**  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 25.
     -   `settings.fixed` **[Boolean][8]?** If set to true, the header will never slide out of the way. Default is false.
     -   `settings.hideOnClick` **[Boolean][8]?** If set to true, the header will slide out of the way when a click occurred inside the header. Default is true. Will be ignored when config.fixed is true.
-    -   `settings.pauseDuration` **[Number][7]?** When the header is hidden away after a click, the sliding mechanism is paused for a duration of 1000 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
+    -   `settings.pauseDuration` **[Number][7]?** When the header is hidden away after a click, the sliding mechanism is paused for a duration of 250 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
     -   `settings.slideIn` **[String][6]?** Provide a CSS class name to be applied to the header whenever the header is sliding into the page (which is the case when the user is scrolling up). The class will only be applied as long as the user is able to scroll up. Once the top of the page is reached, the class will be removed from the header. Default class name is <code>'slide-in'</code>.
     -   `settings.callback` **[Object][9]?** A callback function to be called whenever the header changes. The header is given as an argument into the callback.
 
