@@ -98,7 +98,10 @@ DynamicHeader = (function () {
         }
 
         if (!header) {
-            header = document.getElementsByTagName('header')[0]
+            let headers = document.getElementsByTagName('header');
+            if (headers.length) {
+                header = headers[0];
+            }
             if (!header) {
                 console.error('Header with either id=[' + config.headerId + '] or tag=<header> could not be found in DOM');
                 return;
@@ -214,7 +217,7 @@ DynamicHeader = (function () {
                 // if current position > last position AND scrolled past header height,
                 // move the header out of the way
                 hideHeader();
-            } else {                
+            } else {
                 showHeader();
             }
             lastScrollTop = scrollTop;
@@ -226,7 +229,7 @@ DynamicHeader = (function () {
     }
 
     function onScroll() {
-        moveHeader();        
+        moveHeader();
     }
 
     function onClick() {
@@ -349,6 +352,7 @@ try {
         }
     }
 } catch (e) {
+    console.log('Using DynamicHeader in non-node environment');
     //in non-node environment module is not defined and therefore
     //we will not export anything
 }
