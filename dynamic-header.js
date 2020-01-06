@@ -226,7 +226,10 @@ DynamicHeader = (function () {
     }
 
     function onResize() {
-        showHeader();
+        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (scrollTop <= getHeaderHeight()) {
+            showHeader();
+        }
     }
 
     function onScroll() {
