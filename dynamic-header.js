@@ -32,8 +32,8 @@
  */
 DynamicHeader = (function () {
     //state
-    var self = this;
-    var scrolled, lastScrollTop;
+    var config;
+    var lastScrollTop;
     var header, content, trim;
     var initialHeaderStyle;
     var pauseStart;
@@ -151,7 +151,7 @@ DynamicHeader = (function () {
         //before the content instead of setting a top-margin for the
         //content
 
-        if (!self.config.overlay && header && content && !trim) {
+        if (!config.overlay && header && content && !trim) {
             var parent = content.parentElement;
             trim = document.createElement("div");
             trim.id = 'dynamicHeaderTrim';
@@ -172,11 +172,11 @@ DynamicHeader = (function () {
 
             if (scrollTop + windowHeight() < documentHeight()) {
                 setHeaderTop(0);
-                if (self.config.slideIn) {
+                if (config.slideIn) {
                     if (scrollTop >= getHeaderHeight()) {
-                        addClassToHeader(self.config.slideIn);
+                        addClassToHeader(config.slideIn);
                     } else {
-                        removeClassFromHeader(self.config.slideIn);
+                        removeClassFromHeader(config.slideIn);
                     }
                 }
                 callback();
@@ -205,13 +205,13 @@ DynamicHeader = (function () {
 
     function isPaused() {
         let now = (new Date()).getTime();
-        return (now - pauseStart <= self.config.pauseDuration);
+        return (now - pauseStart <= config.pauseDuration);
     }
 
     function moveHeader() {
-        if (!self.config.fixed && !isPaused()) {
+        if (!config.fixed && !isPaused()) {
             var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-            if (Math.abs(lastScrollTop - scrollTop) <= self.config.delta) return;
+            if (Math.abs(lastScrollTop - scrollTop) <= config.delta) return;
 
             if (scrollTop > lastScrollTop) {
                 // if current position > last position AND scrolled past header height,
@@ -233,7 +233,7 @@ DynamicHeader = (function () {
     }
 
     function onClick() {
-        if (self.config.hideOnClick && !self.config.fixed) {
+        if (config.hideOnClick && !config.fixed) {
             startPause();
             hideHeader();
         }
@@ -252,8 +252,8 @@ DynamicHeader = (function () {
     }
 
     function callback() {
-        if (self.config.callback) {
-            self.config.callback(header);
+        if (config.callback) {
+            config.callback(header);
         }
     }
 
@@ -277,37 +277,37 @@ DynamicHeader = (function () {
         content = null;
     }
 
-    function transferConfig(config) {
-        if (config) {
-            self.config = config;
+    function transferConfig(settings) {
+        if (settings) {
+            config = settings;
         } else {
-            self.config = {};
+            config = {};
         }
-        self.config.fixed = self.config.fix || self.config.fixed;
-        self.config.pauseDuration = self.config.pauseDuration || self.config.pauseMoveDuration;
+        config.fixed = config.fix || config.fixed;
+        config.pauseDuration = config.pauseDuration || config.pauseMoveDuration;
 
-        if (typeof self.config.headerId == 'undefined') {
-            self.config.headerId = 'header';
+        if (typeof config.headerId == 'undefined') {
+            config.headerId = 'header';
         }
-        if (typeof self.config.delta == 'undefined') {
-            self.config.delta = 5;
+        if (typeof config.delta == 'undefined') {
+            config.delta = 10;
         }
-        if (typeof self.config.hideOnClick == 'undefined') {
-            self.config.hideOnClick = true;
+        if (typeof config.hideOnClick == 'undefined') {
+            config.hideOnClick = true;
         }
-        if (typeof self.config.pauseDuration == 'undefined') {
-            self.config.pauseDuration = 1000;
+        if (typeof config.pauseDuration == 'undefined') {
+            config.pauseDuration = 1000;
         }
-        if (typeof self.config.slideIn == 'undefined') {
-            self.config.slideIn = 'slide-in';
+        if (typeof config.slideIn == 'undefined') {
+            config.slideIn = 'slide-in';
         }
     }
 
     //public API
     return {
-        init: function (config) {
+        init: function (settings) {
             cleanUp();
-            transferConfig(config);
+            transferConfig(settings);
             if (document.readyState == 'complete') {
                 onLoad();
             } else {
@@ -328,7 +328,7 @@ try {
             /**
              * @param {*} [settings]
              * @param {String} [settings.headerId] - Specify the id of the container you want to make the dynamic header. Default is 'header'. If not specified will search for the html <code>header</code> tag.
-            *  @param {Number} [settings.delta] -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 5.
+            *  @param {Number} [settings.delta] -  The number of pixels a user need to scroll at least in order to make DynamicHeader react on scrolling. Default is 10.
             *  @param {Boolean} [settings.fixed] - If set to true, the header will never slide out of the way. Default is false.
             *  @param {Boolean} [settings.hideOnClick] - If set to true, the header will slide out of the way when a click occurred inside the header. Default is true. Will be ignored when config.fixed is true.
             *  @param {Number} [settings.pauseDuration] - When the header is hidden away after a click, the sliding mechanism is paused for a duration of 1000 milliseconds to avoid interference with scrolling. Change the default here in terms of milliseconds.
