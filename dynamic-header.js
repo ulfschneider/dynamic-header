@@ -57,7 +57,7 @@ DynamicHeader = (function () {
 
     function isHeaderHidden() {
         var top = parseInt(header.style.top);
-        return top < 0 && top + getHeaderHeight() <= 0; //check that header is really completely hidden
+        return top < 0;
     }
 
     function isHeaderVisible() {
@@ -166,6 +166,7 @@ DynamicHeader = (function () {
 
     function showHeader() {
         trimContent();
+        var wasHidden = isHeaderHidden();
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         if (scrollTop + windowHeight() < documentHeight()) {
             setHeaderTop(0);
@@ -176,17 +177,26 @@ DynamicHeader = (function () {
                     removeClassFromHeader(config.slideIn);
                 }
             }
-            callback();
+            if (wasHidden) {
+                callback();
+            }
         }
 
     }
 
-    function hideHeader() {
+    function hideHeader(distance) {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         var headerHeight = getHeaderHeight();
+        var wasVisible = isHeaderVisible();
         if (scrollTop > headerHeight) {
-            setHeaderTop(-2 * headerHeight + 'px');
-            callback();
+            if (distance) {
+                setHeaderTop(-Math.abs(distance) + 'px');
+            } else {
+                setHeaderTop(-headerHeight + 'px');
+            }
+            if (wasVisible) {
+                callback();
+            }
         }
     }
 
@@ -221,7 +231,8 @@ DynamicHeader = (function () {
 
     function onResize() {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        if (scrollTop <= getHeaderHeight()) {
+        var headerHeight = getHeaderHeight();
+        if (scrollTop <= headerHeight) {
             showHeader();
         } else {
             var top = parseInt(header.style.top);
@@ -230,7 +241,7 @@ DynamicHeader = (function () {
                 //top < 0 indicates the header should be hidden
                 //but due to resizing it might not be
                 //completely hidden
-                hideHeader();
+                hideHeader(2 * headerHeight);
             }
         }
     }
