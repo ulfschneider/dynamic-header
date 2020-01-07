@@ -57,8 +57,7 @@ DynamicHeader = (function () {
 
     function isHeaderHidden() {
         var top = parseInt(header.style.top);
-        console.log(top);
-        return top < 0;
+        return top < 0 && top + getHeaderHeight() <= 0; //check that header is really completely hidden
     }
 
     function isHeaderVisible() {
@@ -126,7 +125,6 @@ DynamicHeader = (function () {
     }
 
     function trimContent() {
-
         if (trim) {
             var headerHeight = getHeaderHeight();
             setContentTrim(headerHeight - 1 + 'px');
@@ -168,31 +166,27 @@ DynamicHeader = (function () {
 
     function showHeader() {
         trimContent();
-        if (isHeaderHidden()) {
-            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-
-            if (scrollTop + windowHeight() < documentHeight()) {
-                setHeaderTop(0);
-                if (config.slideIn) {
-                    if (scrollTop >= getHeaderHeight()) {
-                        addClassToHeader(config.slideIn);
-                    } else {
-                        removeClassFromHeader(config.slideIn);
-                    }
+        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (scrollTop + windowHeight() < documentHeight()) {
+            setHeaderTop(0);
+            if (config.slideIn) {
+                if (scrollTop >= getHeaderHeight()) {
+                    addClassToHeader(config.slideIn);
+                } else {
+                    removeClassFromHeader(config.slideIn);
                 }
-                callback();
             }
+            callback();
         }
+
     }
 
     function hideHeader() {
-        if (isHeaderVisible()) {
-            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-            var headerHeight = getHeaderHeight();
-            if (scrollTop > headerHeight) {
-                setHeaderTop(-headerHeight + 'px');
-                callback();
-            }
+        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        var headerHeight = getHeaderHeight();
+        if (scrollTop > headerHeight) {
+            setHeaderTop(-2 * headerHeight + 'px');
+            callback();
         }
     }
 
@@ -229,6 +223,15 @@ DynamicHeader = (function () {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         if (scrollTop <= getHeaderHeight()) {
             showHeader();
+        } else {
+            var top = parseInt(header.style.top);
+            if (top < 0) {
+                //ensure the header is completely hidden
+                //top < 0 indicates the header should be hidden
+                //but due to resizing it might not be
+                //completely hidden
+                hideHeader();
+            }
         }
     }
 
