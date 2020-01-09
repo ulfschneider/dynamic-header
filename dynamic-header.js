@@ -34,7 +34,7 @@ DynamicHeader = (function () {
     //state
     var config;
     var lastScrollTop;
-    var header, content, trim;
+    var header, trim;
     var initialHeaderStyle;
     var pauseStart;
     var TRANSITION = '0.2s ease-in-out';
@@ -112,22 +112,32 @@ DynamicHeader = (function () {
         return header;
     }
 
-    function selectContent() {
-        content = document.body.firstElementChild;
-    }
-
-    function setContentTrim(margin) {
-        trim.style.height = margin;
-    }
-
     function setHeaderTop(top) {
         header.style.top = top;
     }
 
-    function trimContent() {
+    function trimHeader() {
         if (trim) {
             var headerHeight = getHeaderHeight();
-            setContentTrim(headerHeight - 1 + 'px');
+            trim.style.height = headerHeight - 1 + 'px';
+        }
+    }
+
+    function insertTrim() {
+        //insert a trim div with a specific height
+        //before the header 
+
+        if (header && !trim) {
+            var parent = header.parentElement;
+            trim = document.createElement("div");
+            trim.id = 'dynamicHeaderTrim';
+            parent.insertBefore(trim, header);
+            trimHeader();
+        } else {
+            if (trim) {
+                trim.remove();
+            }
+            trim = null;
         }
     }
 
@@ -145,27 +155,8 @@ DynamicHeader = (function () {
         header.className = header.className.replace(new RegExp(cssClass, 'g'), '');
     }
 
-    function insertTrim() {
-        //it´s more unobtrusive to insert a trim div with a specific height
-        //before the content instead of setting a top-margin for the
-        //content
-
-        if (!config.overlay && header && content && !trim) {
-            var parent = content.parentElement;
-            trim = document.createElement("div");
-            trim.id = 'dynamicHeaderTrim';
-            parent.insertBefore(trim, content);
-            trimContent();
-        } else {
-            if (trim) {
-                trim.remove();
-            }
-            trim = null;
-        }
-    }
-
     function showHeader() {
-        trimContent();
+        trimHeader();
         var wasHidden = isHeaderHidden();
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         if (scrollTop + windowHeight() < documentHeight()) {
@@ -261,7 +252,6 @@ DynamicHeader = (function () {
         selectHeader();
 
         if (header) {
-            selectContent();
             insertTrim();
             window.addEventListener('resize', onResize);
             window.addEventListener('scroll', onScroll);
@@ -292,7 +282,6 @@ DynamicHeader = (function () {
         }
         trim = null;
         header = null;
-        content = null;
     }
 
     function transferConfig(settings) {
