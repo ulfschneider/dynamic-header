@@ -177,6 +177,7 @@ DynamicHeader = (function () {
 
     function hideHeader(distance) {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        lastScrollTop = scrollTop;
         var headerHeight = getHeaderHeight();
         var wasVisible = isHeaderVisible();
         if (scrollTop > headerHeight) {
