@@ -5,21 +5,27 @@
     <meta charset="UTF-8">
     <title>DynamicHeader Example</title>
 
-    <script src="dynamic-header.min.js"></script>
+    <script src="dynamic-header.js"></script>
 </head>
 <style>
     body {
         line-height: 1.62em;
         font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Ubuntu, Roboto, Noto, "Segoe UI", Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    .content{
+        padding: 1.62rem;
     }
 </style>
 
 <body>
-    <h1>Title</h1>
-    <header style="background:#333; color:white;  padding:1.62rem">
+    <h1 class="content">One Morning</h1>
+    <header style="background:#333; color:white;  padding:1.62rem;">
         PLEASE SCROLL DOWN AND UP TO SEE DYNAMIC HEADER BEHAVIOR
     </header>
-    <div id="content" style="padding:1.62rem;">
+    <div class="content">
         <p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a
             horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown
             belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and
@@ -141,7 +147,7 @@
     </div>
 </body>
 <script>
-    DynamicHeader.init({ callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (header.style.top == '0px')); } });
+    DynamicHeader.init({ callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (parseInt(header.style.top) >= 0)); } });
 </script>
 
 </html>

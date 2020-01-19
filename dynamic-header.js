@@ -37,12 +37,13 @@ DynamicHeader = (function () {
     var header, trim;
     var initialHeaderStyle;
     var pauseStart;
+    var active;
     var TRANSITION = '0.2s ease-in-out';
+
 
     function windowHeight() {
         return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     }
-
     function documentHeight() {
         return Math.max(
             document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -50,17 +51,52 @@ DynamicHeader = (function () {
             document.body.clientHeight, document.documentElement.clientHeight
         );
     }
-
+    function getScrollTop() {
+        return document.body.scrollTop || document.documentElement.scrollTop;
+    }
+    function getHeaderTop() {
+        if (isActive()) {
+            return getTrimTop();
+        } else {
+            return header.offsetTop;
+        }
+    }
     function getHeaderHeight() {
         return header.offsetHeight;
     }
-
-    function isHeaderHidden() {        
-        return getHeaderTop() < 0;
+    function getTrimTop() {
+        return trim ? trim.offsetTop : 0;
     }
-
-    function isHeaderVisible() {
-        return !isHeaderHidden();
+    function getHeaderBottom() {
+        if (isActive()) {
+            return getTrimTop() + getHeaderHeight();
+        } else {
+            return getHeaderTop() + getHeaderHeight();
+        }
+    }
+    function isHeaderInvisible() {        
+        if (isActive()) {
+            return getHeaderBottom() - header.style.top > 0;
+        }
+        return getHeaderBottom() > 0;
+    }
+    function isHeaderActivelyHidden() {
+        return isActive() && parseInt(header.style.top) < 0;
+    }
+    function controlActivation() {
+        if (!active && getHeaderBottom() < getScrollTop()) {
+            active = true;
+            modifyHeaderStyle();
+        } else if (active && getScrollTop() <= getHeaderTop()) {
+            active = false;
+            restoreHeaderStyle();
+        }
+        if (active) {
+            trimHeader();
+        }
+    }
+    function isActive() {
+        return active;
     }
 
     function storeHeaderStyle() {
@@ -73,6 +109,7 @@ DynamicHeader = (function () {
     }
 
     function restoreHeaderStyle() {
+        removeTrim();
         if (header && initialHeaderStyle) {
             header.style.transition = initialHeaderStyle.transition;
             header.style.position = initialHeaderStyle.position;
@@ -80,15 +117,14 @@ DynamicHeader = (function () {
             header.style.top = initialHeaderStyle.top;
             header.style.right = initialHeaderStyle.right;
         }
+
     }
 
     function modifyHeaderStyle() {
-        //modify header style
-        header.style.transition = TRANSITION;        
+        header.style.transition = TRANSITION;
         header.style.position = 'fixed';
-        header.style.top = '0';
         header.style.left = '0';
-        header.style.right = '0';        
+        header.style.right = '0';
     }
 
 
@@ -98,7 +134,7 @@ DynamicHeader = (function () {
         }
 
         if (!header) {
-            let headers = document.getElementsByTagName('header');
+            var headers = document.getElementsByTagName('header');
             if (headers.length) {
                 header = headers[0];
             }
@@ -116,37 +152,33 @@ DynamicHeader = (function () {
         header.style.top = top;
     }
 
-    function getHeaderTop() {
-        return parseInt(header.style.top);
-    }
-
-    function getTrimTop() {
-        return parseInt(trim.style.top);
-    }
-
-    function trimHeader() {
+    function trimHeader(trimHeight) {
+        insertTrim();
         if (trim) {
-            var headerHeight = getHeaderHeight();
-            trim.style.height = headerHeight - 1 + 'px';
+            if (trimHeight) {
+                trim.style.height = trimHeight;
+            } else {
+                if (isHeaderInvisible()) {
+                    trim.style.height = getHeaderHeight() - 1 + 'px';
+                }
+            }
         }
     }
 
     function insertTrim() {
-        //insert a trim div with a specific height
-        //before the header 
-
         if (header && !trim) {
             var parent = header.parentElement;
             trim = document.createElement("div");
-            trim.id = 'dynamicHeaderTrim';
+            trim.id = 'dynamic-header-trim';
             parent.insertBefore(trim, header);
-            trimHeader();
-        } else {
-            if (trim) {
-                trim.remove();
-            }
-            trim = null;
         }
+    }
+
+    function removeTrim() {
+        if (trim) {
+            trim.remove();
+        }
+        trim = null;
     }
 
     function addClassToHeader(cssClass) {
@@ -164,43 +196,38 @@ DynamicHeader = (function () {
     }
 
     function showHeader() {
-        trimHeader();        
-        var wasHidden = isHeaderHidden();
-        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-
-        console.log('trimtop:' + getTrimTop() + ' scrolltop:' + scrollTop );
-
-        if (scrollTop + windowHeight() < documentHeight()) {
-            modifyHeaderStyle();
-            setHeaderTop(0);            
-            if (config.slideIn) {
-                if (scrollTop >= getHeaderHeight()) {
-                    addClassToHeader(config.slideIn);
-                } else {
-                    removeClassFromHeader(config.slideIn);
+        if (isHeaderActivelyHidden()) {
+            var scrollTop = getScrollTop();
+            if (scrollTop + windowHeight() < documentHeight()) {
+                setHeaderTop(0);
+                if (config.slideIn) {
+                    if (scrollTop >= getHeaderHeight()) {
+                        addClassToHeader(config.slideIn);
+                    } else {
+                        removeClassFromHeader(config.slideIn);
+                    }
                 }
-            }
-            if (wasHidden) {
                 callback();
             }
         }
-
     }
 
     function hideHeader(distance) {
-        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        lastScrollTop = scrollTop;
-        var headerHeight = getHeaderHeight();
-        var wasVisible = isHeaderVisible();
-        if (scrollTop > headerHeight && getHeaderTop() <= 0) {
-            modifyHeaderStyle();
-            if (distance) {
-                setHeaderTop(-Math.abs(distance) + 'px');
-            } else {
-                setHeaderTop(-headerHeight + 'px');
-            }
-            if (wasVisible) {
-                callback();
+        if (!isHeaderActivelyHidden() || !isHeaderInvisible()) {
+            var wasHidden = isHeaderActivelyHidden();
+
+            var scrollTop = getScrollTop();
+            lastScrollTop = scrollTop;
+            var headerHeight = getHeaderHeight();
+            if (scrollTop > headerHeight) {
+                if (distance) {
+                    setHeaderTop(-Math.abs(distance) + 'px');
+                } else {
+                    setHeaderTop(-headerHeight + 'px');
+                }
+                if (!wasHidden) {
+                    callback();
+                }
             }
         }
     }
@@ -214,17 +241,20 @@ DynamicHeader = (function () {
     }
 
     function isPaused() {
-        let now = (new Date()).getTime();
+        var now = (new Date()).getTime();
         return (now - pauseStart <= config.pauseDuration);
     }
 
     function moveHeader() {
-        if (!config.fixed && !isPaused()) {
-            var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-            if (Math.abs(lastScrollTop - scrollTop) <= config.delta) return;
+        if (!config.fixed && !isPaused() && isActive()) {
+            var scrollTop = getScrollTop();
+
+            if (Math.abs(lastScrollTop - scrollTop) <= config.delta) {
+                return;
+            }
 
             if (scrollTop > lastScrollTop) {
-                // if current position > last position AND scrolled past header height,
+                // if scrolling down AND scrolled past header height,
                 // move the header out of the way
                 hideHeader();
             } else {
@@ -235,30 +265,26 @@ DynamicHeader = (function () {
     }
 
     function onResize() {
-        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        var headerHeight = getHeaderHeight();
-        if (scrollTop <= headerHeight) {
-            showHeader();
-        } else {
-            var top = parseInt(header.style.top);
-            if (top < 0) {
-                //ensure the header is completely hidden
-                //top < 0 indicates the header should be hidden
-                //but due to resizing it might not be
-                //completely hidden
-                hideHeader(2 * headerHeight);
-            }
+        controlActivation();
+        if (isHeaderActivelyHidden()) {
+            hideHeader();
         }
     }
 
     function onScroll() {
-        moveHeader();
+        controlActivation();
+        if (isActive()) {
+            moveHeader();
+        }
     }
 
     function onClick() {
+        controlActivation();
         if (config.hideOnClick && !config.fixed) {
-            startPause();
-            setTimeout(hideHeader, config.pauseDuration);
+            if (isActive()) {
+                startPause();
+                setTimeout(hideHeader, config.pauseDuration);
+            }
         }
     }
 
@@ -266,7 +292,6 @@ DynamicHeader = (function () {
         selectHeader();
 
         if (header) {
-            insertTrim();
             window.addEventListener('resize', onResize);
             window.addEventListener('scroll', onScroll);
             header.addEventListener('click', onClick);
@@ -287,14 +312,8 @@ DynamicHeader = (function () {
             header.removeEventListener('click', onClick);
         }
         clearPause();
-        transferConfig(); //reset config
-        lastScrollTop = 0;
-        scrolled = 0;
         restoreHeaderStyle();
-        if (trim) {
-            trim.remove();
-        }
-        trim = null;
+        lastScrollTop = 0;
         header = null;
     }
 
