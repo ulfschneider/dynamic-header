@@ -55,34 +55,24 @@ DynamicHeader = (function () {
         return header.offsetHeight;
     }
 
-    function isHeaderHidden() {
-        var top = parseInt(header.style.top);
-        return top < 0;
+    function isHeaderHidden() {        
+        return getHeaderTop() < 0;
     }
 
     function isHeaderVisible() {
         return !isHeaderHidden();
     }
 
-    function modifyHeaderStyle() {
-        //save header style for later clean up
+    function storeHeaderStyle() {
         initialHeaderStyle = {};
         initialHeaderStyle.transition = header.style.transition;
         initialHeaderStyle.position = header.style.position;
         initialHeaderStyle.left = header.style.left;
         initialHeaderStyle.top = header.style.top;
         initialHeaderStyle.right = header.style.right;
-
-        //modify header style
-        header.style.transition = TRANSITION;
-        header.style.position = 'fixed';
-        header.style.top = '0';
-        header.style.left = '0';
-        header.style.right = '0';
     }
 
-    function revertHeaderStyle() {
-        //clean up any settings that have been made by DynamicHeader
+    function restoreHeaderStyle() {
         if (header && initialHeaderStyle) {
             header.style.transition = initialHeaderStyle.transition;
             header.style.position = initialHeaderStyle.position;
@@ -91,6 +81,16 @@ DynamicHeader = (function () {
             header.style.right = initialHeaderStyle.right;
         }
     }
+
+    function modifyHeaderStyle() {
+        //modify header style
+        header.style.transition = TRANSITION;        
+        header.style.position = 'fixed';
+        header.style.top = '0';
+        header.style.left = '0';
+        header.style.right = '0';        
+    }
+
 
     function selectHeader() {
         if (config.headerId) {
@@ -108,12 +108,20 @@ DynamicHeader = (function () {
             }
         }
 
-        modifyHeaderStyle();
+        storeHeaderStyle();
         return header;
     }
 
     function setHeaderTop(top) {
         header.style.top = top;
+    }
+
+    function getHeaderTop() {
+        return parseInt(header.style.top);
+    }
+
+    function getTrimTop() {
+        return parseInt(trim.style.top);
     }
 
     function trimHeader() {
@@ -156,11 +164,15 @@ DynamicHeader = (function () {
     }
 
     function showHeader() {
-        trimHeader();
+        trimHeader();        
         var wasHidden = isHeaderHidden();
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+        console.log('trimtop:' + getTrimTop() + ' scrolltop:' + scrollTop );
+
         if (scrollTop + windowHeight() < documentHeight()) {
-            setHeaderTop(0);
+            modifyHeaderStyle();
+            setHeaderTop(0);            
             if (config.slideIn) {
                 if (scrollTop >= getHeaderHeight()) {
                     addClassToHeader(config.slideIn);
@@ -180,7 +192,8 @@ DynamicHeader = (function () {
         lastScrollTop = scrollTop;
         var headerHeight = getHeaderHeight();
         var wasVisible = isHeaderVisible();
-        if (scrollTop > headerHeight) {
+        if (scrollTop > headerHeight && getHeaderTop() <= 0) {
+            modifyHeaderStyle();
             if (distance) {
                 setHeaderTop(-Math.abs(distance) + 'px');
             } else {
@@ -277,7 +290,7 @@ DynamicHeader = (function () {
         transferConfig(); //reset config
         lastScrollTop = 0;
         scrolled = 0;
-        revertHeaderStyle();
+        restoreHeaderStyle();
         if (trim) {
             trim.remove();
         }
