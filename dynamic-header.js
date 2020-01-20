@@ -87,8 +87,13 @@ DynamicHeader = (function () {
     function controlDynamic() {
         if (!dynamic && getHeaderBottom() < getScrollTop()) {
             dynamic = true;
-            modifyHeaderStyle();
+            if (isHeaderInvisible()) {
+                header.style.visibility = 'none';
+                hideHeader();
+            }
+            modifyHeaderStyle();            
             addClassToHeader('is-dynamic');
+            header.style.visibility = 'unset';
         } else if (dynamic && getScrollTop() <= getHeaderTop()) {
             dynamic = false;
             removeClassFromHeader('is-dynamic');
