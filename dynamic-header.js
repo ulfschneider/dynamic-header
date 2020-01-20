@@ -34,10 +34,10 @@ DynamicHeader = (function () {
     //state
     var config;
     var lastScrollTop;
-    var header, trim;
+    var header, trim, timeoutId;
     var initialHeaderStyle;
     var pauseStart;
-    var active;
+    var dynamic;
     var TRANSITION = '0.2s ease-in-out';
 
 
@@ -55,7 +55,7 @@ DynamicHeader = (function () {
         return document.body.scrollTop || document.documentElement.scrollTop;
     }
     function getHeaderTop() {
-        if (isActive()) {
+        if (isDynamic()) {
             return getTrimTop();
         } else {
             return header.offsetTop;
@@ -68,37 +68,38 @@ DynamicHeader = (function () {
         return trim ? trim.offsetTop : 0;
     }
     function getHeaderBottom() {
-        if (isActive()) {
+        if (isDynamic()) {
             return getTrimTop() + getHeaderHeight();
         } else {
             return getHeaderTop() + getHeaderHeight();
         }
     }
-    function isHeaderInvisible() {        
-        if (isActive()) {
+    function isHeaderInvisible() {
+        if (isDynamic()) {
             return getHeaderBottom() - header.style.top > 0;
+        } else {
+            return getHeaderBottom() > 0;
         }
-        return getHeaderBottom() > 0;
     }
-    function isHeaderActivelyHidden() {
-        return isActive() && parseInt(header.style.top) < 0;
+    function isHeaderDynamicHidden() {
+        return isDynamic() && parseInt(header.style.top) < 0;
     }
-    function controlActivation() {
-        if (!active && getHeaderBottom() < getScrollTop()) {
-            active = true;
+    function controlDynamic() {
+        if (!dynamic && getHeaderBottom() < getScrollTop()) {
+            dynamic = true;
             modifyHeaderStyle();
             addClassToHeader('is-dynamic');
-        } else if (active && getScrollTop() <= getHeaderTop()) {
-            active = false;
+        } else if (dynamic && getScrollTop() <= getHeaderTop()) {
+            dynamic = false;
             removeClassFromHeader('is-dynamic');
             restoreHeaderStyle();
         }
-        if (active) {
+        if (dynamic) {
             trimHeader();
         }
     }
-    function isActive() {
-        return active;
+    function isDynamic() {
+        return dynamic;
     }
 
     function storeHeaderStyle() {
@@ -198,7 +199,7 @@ DynamicHeader = (function () {
     }
 
     function showHeader() {
-        if (isHeaderActivelyHidden()) {
+        if (isHeaderDynamicHidden()) {
             var scrollTop = getScrollTop();
             if (scrollTop + windowHeight() < documentHeight()) {
                 setHeaderTop(0);
@@ -215,8 +216,8 @@ DynamicHeader = (function () {
     }
 
     function hideHeader(distance) {
-        if (!isHeaderActivelyHidden() || !isHeaderInvisible()) {
-            var wasHidden = isHeaderActivelyHidden();
+        if (!isHeaderDynamicHidden() || !isHeaderInvisible()) {
+            var wasHidden = isHeaderDynamicHidden();
 
             var scrollTop = getScrollTop();
             lastScrollTop = scrollTop;
@@ -247,8 +248,16 @@ DynamicHeader = (function () {
         return (now - pauseStart <= config.pauseDuration);
     }
 
+    function startTimedAction(action) {
+        startPause();
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(action ? action : hideHeader, config.pauseDuration);
+    }
+
     function moveHeader() {
-        if (!config.fixed && !isPaused() && isActive()) {
+        if (!config.fixed && !isPaused() && isDynamic()) {
             var scrollTop = getScrollTop();
 
             if (Math.abs(lastScrollTop - scrollTop) <= config.delta) {
@@ -267,32 +276,31 @@ DynamicHeader = (function () {
     }
 
     function onResize() {
-        controlActivation();
-        if (isHeaderActivelyHidden()) {
+        controlDynamic();
+        if (isHeaderDynamicHidden()) {
             hideHeader();
         }
     }
 
     function onScroll() {
-        controlActivation();
-        if (isActive()) {
+        controlDynamic();
+        if (isDynamic()) {
             moveHeader();
         }
     }
 
     function onClick() {
-        controlActivation();
+        controlDynamic();
         if (config.hideOnClick && !config.fixed) {
-            if (isActive()) {
-                startPause();
-                setTimeout(hideHeader, config.pauseDuration);
+            if (isDynamic()) {
+                startTimedAction();
             }
         }
     }
 
     function onLoad() {
         selectHeader();
-
+        controlDynamic();
         if (header) {
             window.addEventListener('resize', onResize);
             window.addEventListener('scroll', onScroll);
