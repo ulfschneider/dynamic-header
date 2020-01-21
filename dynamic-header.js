@@ -293,6 +293,7 @@ DynamicHeader = (function () {
     function onLoad() {
         selectHeader();
         if (header) {
+            controlDynamic();
             window.addEventListener('resize', onResize);
             window.addEventListener('scroll', onScroll);
             header.addEventListener('click', onClick);
