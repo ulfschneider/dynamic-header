@@ -147,7 +147,7 @@
     </div>
 </body>
 <script>
-    DynamicHeader.init({ callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (parseInt(header.style.top) >= 0)); } });
+    DynamicHeader.init({ fix: true, callback: function (header) { console.log('header-height: ' + header.offsetHeight + ' visible: ' + (parseInt(header.style.top) >= 0)); } });
 </script>
 
 </html>

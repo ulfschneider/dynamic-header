@@ -85,18 +85,20 @@ DynamicHeader = (function () {
     }
     function controlDynamic() {
         if (!dynamic && config.fixed && getHeaderOffsetTop() <= getScrollTop()) {
-            modifyHeaderStyle();            
+            modifyHeaderStyle();
             setHeaderTop(0);
             dynamic = true; //last thing to do in this block
-        } else  if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
+        } else if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
             if (isHeaderInvisible()) {
                 setHeaderTop(- getHeaderHeight());
             }
-            modifyHeaderStyle();            
+            modifyHeaderStyle();
             dynamic = true; //last thing to do in this block
         } else if (dynamic && getScrollTop() <= getHeaderOffsetTop()) {
-            restoreHeaderStyle();
-            dynamic = false; //last thing to do in this block
+            if (!config.fixed || (config.fixed && getHeaderOffsetTop() > 0)) {
+                restoreHeaderStyle();
+                dynamic = false; //last thing to do in this block
+            }
         }
     }
     function isDynamic() {
