@@ -75,7 +75,7 @@ DynamicHeader = (function () {
     }
     function isHeaderInvisible() {
         if (isDynamic()) {
-            return hasHeaderTop() && (getHeaderTop() + getHeaderHeight() <= 0);
+            return hasHeaderTop() && getHeaderTop() + getHeaderHeight() <= 0;
         } else {
             return getHeaderOffsetBottom() < getScrollTop();
         }
@@ -270,9 +270,6 @@ DynamicHeader = (function () {
 
     function onResize() {
         controlDynamic();
-        if (isDynamic()) {
-            trimHeader();
-        }
         if (isHeaderDynamicHidden()) {
             hideHeader();
         }
@@ -317,6 +314,8 @@ DynamicHeader = (function () {
         restoreHeaderStyle();
         lastScrollTop = 0;
         header = null;
+        timeoutId = null;        
+        dynamic = false;
     }
 
     function transferConfig(settings) {
