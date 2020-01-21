@@ -3,7 +3,7 @@
  *
  * A dynamic header for web pages.
  * 
- * Please review the [DynamicHeader Playground](https://htmlpreview.github.io/?https://github.com/ulfschneider/dynamic-header/blob/master/dynamic-header.html) to see the usage.
+ * Please download the repo and open the file <code>dynamic-header.html</code> to see the usage.
  * 
  * Install DynamicHeader in your Node project with 
  * <pre>
