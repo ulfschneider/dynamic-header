@@ -52,7 +52,7 @@ DynamicHeader = (function () {
         }
     }
     function setHeaderTop(top) {
-        header.style.top = top;
+        header.style.top = top + 'px';
     }
     function hasHeaderTop() {
         return header.style.top;
@@ -85,19 +85,17 @@ DynamicHeader = (function () {
     }
     function controlDynamic() {
         if (!dynamic && config.fixed && getHeaderOffsetTop() <= getScrollTop()) {
-            modifyHeaderStyle();
             setHeaderTop(0);
-            dynamic = true; //last thing to do in this block
-        } else if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
-            if (isHeaderInvisible()) {
-                setHeaderTop(- getHeaderHeight());
-            }
             modifyHeaderStyle();
-            dynamic = true; //last thing to do in this block
+            dynamic = true;
+        } else if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
+            setHeaderTop(- getHeaderHeight());
+            modifyHeaderStyle();
+            dynamic = true;
         } else if (dynamic && getScrollTop() <= getHeaderOffsetTop()) {
             if (!config.fixed || (config.fixed && getHeaderOffsetTop() > 0)) {
                 restoreHeaderStyle();
-                dynamic = false; //last thing to do in this block
+                dynamic = false;
             }
         }
     }
@@ -233,6 +231,9 @@ DynamicHeader = (function () {
     }
 
     function clearPause() {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
         pauseStart = 0;
     }
 
@@ -304,17 +305,18 @@ DynamicHeader = (function () {
     }
 
     function cleanUp() {
+        restoreHeaderStyle();
+        clearPause();
+
         window.removeEventListener('resize', onResize);
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('load', onLoad);
         if (header) {
             header.removeEventListener('click', onClick);
         }
-        clearPause();
-        restoreHeaderStyle();
         lastScrollTop = 0;
         header = null;
-        timeoutId = null;        
+        timeoutId = null;
         dynamic = false;
     }
 
