@@ -84,11 +84,15 @@ DynamicHeader = (function () {
         return isDynamic() && getHeaderTop() < 0;
     }
     function controlDynamic() {
-        if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
+        if (!dynamic && config.fixed && getHeaderOffsetTop() <= getScrollTop()) {
+            modifyHeaderStyle();            
+            setHeaderTop(0);
+            dynamic = true; //last thing to do in this block
+        } else  if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
             if (isHeaderInvisible()) {
                 setHeaderTop(- getHeaderHeight());
             }
-            modifyHeaderStyle();
+            modifyHeaderStyle();            
             dynamic = true; //last thing to do in this block
         } else if (dynamic && getScrollTop() <= getHeaderOffsetTop()) {
             restoreHeaderStyle();
