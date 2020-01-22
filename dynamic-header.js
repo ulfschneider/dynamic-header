@@ -198,13 +198,13 @@ DynamicHeader = (function () {
 
     function showHeader() {
         if (isHeaderMovedAway()) {
-            setHeaderTop(0);
+            setHeaderTop(0);            
             addClassToHeader(config.slideIn);
             callback();
         }
     }
 
-    function hideHeader(distance) {
+    function hideHeader(distance) {        
         if (!config.fixed) {
             var wasHidden = isHeaderMovedAway();
 
@@ -263,7 +263,7 @@ DynamicHeader = (function () {
     function onResize() {
         controlDynamic();
         if (isDynamic()) {
-            hideHeader();
+            hideHeader(getHeaderHeight() * -2);
             trimHeader();
         }
     }
