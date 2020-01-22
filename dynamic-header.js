@@ -267,6 +267,9 @@ DynamicHeader = (function () {
 
     function onResize() {
         controlDynamic();
+        if (isDynamic()) {
+            trimHeader();
+        }
         if (isHeaderMovedAway()) {
             hideHeader();
         }
