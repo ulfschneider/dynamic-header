@@ -115,6 +115,7 @@ DynamicHeader = (function () {
         initialHeaderStyle.left = header.style.left;
         initialHeaderStyle.top = header.style.top;
         initialHeaderStyle.right = header.style.right;
+        initialHeaderStyle.visibility = header.style.visibility;
     }
 
     function restoreHeaderStyle() {
@@ -125,6 +126,7 @@ DynamicHeader = (function () {
             header.style.left = initialHeaderStyle.left;
             header.style.top = initialHeaderStyle.top;
             header.style.right = initialHeaderStyle.right;
+            header.style.visibility = initialHeaderStyle.visibility;
         }
         removeTrim();
     }
@@ -203,13 +205,13 @@ DynamicHeader = (function () {
 
     function showHeader() {
         if (isHeaderMovedAway()) {
-            setHeaderTop(0);            
+            setHeaderTop(0);
             addClassToHeader(config.slideIn);
             callback();
         }
     }
 
-    function hideHeader(distance) {        
+    function hideHeader(distance) {
         if (!config.fixed) {
             var wasHidden = isHeaderMovedAway();
 
@@ -260,7 +262,7 @@ DynamicHeader = (function () {
                 hideHeader();
             } else {
                 showHeader();
-            }            
+            }
         }
         lastScrollTop = getScrollTop();
     }
