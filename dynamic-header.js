@@ -307,7 +307,7 @@ DynamicHeader = (function () {
             header.removeEventListener('click', onClick);
         }
         initialHeaderStyle = null;
-        lastScrollTop = 0;
+        lastScrollTop = getScrollTop();
         header = null;
         dynamic = false;
     }
