@@ -205,18 +205,20 @@ DynamicHeader = (function () {
     }
 
     function hideHeader(distance) {
-        var wasHidden = isHeaderMovedAway();
+        if (!config.fixed) {
+            var wasHidden = isHeaderMovedAway();
 
-        if (!wasHidden || !isHeaderInvisible()) {
-            var headerHeight = getHeaderHeight();
-            if (distance) {
-                setHeaderTop(-Math.abs(distance));
-            } else {
-                setHeaderTop(-headerHeight);
-            }
-            if (!wasHidden) {
-                removeClassFromHeader(config.slideIn);
-                callback();
+            if (!wasHidden || !isHeaderInvisible()) {
+                var headerHeight = getHeaderHeight();
+                if (distance) {
+                    setHeaderTop(-Math.abs(distance));
+                } else {
+                    setHeaderTop(-headerHeight);
+                }
+                if (!wasHidden) {
+                    removeClassFromHeader(config.slideIn);
+                    callback();
+                }
             }
         }
     }
@@ -268,10 +270,8 @@ DynamicHeader = (function () {
     function onResize() {
         controlDynamic();
         if (isDynamic()) {
-            trimHeader();
-        }
-        if (isHeaderMovedAway()) {
             hideHeader();
+            trimHeader();
         }
     }
 
