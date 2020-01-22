@@ -45,8 +45,9 @@ DynamicHeader = (function () {
         return document.body.scrollTop || document.documentElement.scrollTop;
     }
     function getHeaderOffsetTop() {
-        if (isDynamic()) {
-            return getTrimOffsetTop();
+        var trimOffset = getTrimOffsetTop();
+        if (trimOffset) {
+            return trimOffset;
         } else {
             return header.offsetTop;
         }
@@ -56,6 +57,9 @@ DynamicHeader = (function () {
     }
     function hasHeaderTop() {
         return header.style.top;
+    }
+    function isHeaderFixed() {
+        return header.style.position == 'fixed';
     }
     function getHeaderTop() {
         return parseInt(header.style.top);
@@ -67,28 +71,27 @@ DynamicHeader = (function () {
         return trim ? trim.offsetTop : 0;
     }
     function getHeaderOffsetBottom() {
-        if (isDynamic()) {
-            return getTrimOffsetTop() + getHeaderHeight();
-        } else {
-            return getHeaderOffsetTop() + getHeaderHeight();
-        }
+        return getHeaderOffsetTop() + getHeaderHeight();
     }
     function isHeaderInvisible() {
         if (isDynamic()) {
-            return hasHeaderTop() && getHeaderTop() + getHeaderHeight() <= 0;
+            return getHeaderTop() + getHeaderHeight() <= 0;
         } else {
             return getHeaderOffsetBottom() < getScrollTop();
         }
     }
-    function isHeaderDynamicHidden() {
+    function isHeaderMovedAway() {
         return isDynamic() && getHeaderTop() < 0;
     }
+    function isDynamic() {
+        return dynamic && hasHeaderTop() && isHeaderFixed();
+    }
     function controlDynamic() {
-        if (!dynamic && config.fixed && getHeaderOffsetTop() <= getScrollTop()) {
+        if (!isDynamic() && config.fixed && getHeaderOffsetTop() <= getScrollTop()) {
             setHeaderTop(0);
             modifyHeaderStyle();
             dynamic = true;
-        } else if (!dynamic && getHeaderOffsetBottom() < getScrollTop()) {
+        } else if (!isDynamic() && getHeaderOffsetBottom() < getScrollTop()) {
             setHeaderTop(- getHeaderHeight());
             modifyHeaderStyle();
             dynamic = true;
@@ -99,25 +102,19 @@ DynamicHeader = (function () {
             }
         }
     }
-    function isDynamic() {
-        return dynamic;
-    }
 
     function storeHeaderStyle() {
-        if (header) {
-            initialHeaderStyle = {};
-            initialHeaderStyle.transition = header.style.transition;
-            initialHeaderStyle.position = header.style.position;
-            initialHeaderStyle.left = header.style.left;
-            initialHeaderStyle.top = header.style.top;
-            initialHeaderStyle.right = header.style.right;
-        }
+        initialHeaderStyle = {};
+        initialHeaderStyle.transition = header.style.transition;
+        initialHeaderStyle.position = header.style.position;
+        initialHeaderStyle.left = header.style.left;
+        initialHeaderStyle.top = header.style.top;
+        initialHeaderStyle.right = header.style.right;
     }
 
     function restoreHeaderStyle() {
-
-        if (header && initialHeaderStyle) {
-            removeClassFromHeader('is-dynamic');
+        removeClassFromHeader('is-dynamic');
+        if (initialHeaderStyle) {
             header.style.transition = initialHeaderStyle.transition;
             header.style.position = initialHeaderStyle.position;
             header.style.left = initialHeaderStyle.left;
@@ -128,14 +125,12 @@ DynamicHeader = (function () {
     }
 
     function modifyHeaderStyle() {
-        if (header) {
-            trimHeader();
-            header.style.transition = TRANSITION;
-            header.style.position = 'fixed';
-            header.style.left = '0';
-            header.style.right = '0';
-            addClassToHeader('is-dynamic');
-        }
+        trimHeader();
+        header.style.transition = TRANSITION;
+        header.style.position = 'fixed';
+        header.style.left = '0';
+        header.style.right = '0';
+        addClassToHeader('is-dynamic');
     }
 
 
@@ -150,8 +145,7 @@ DynamicHeader = (function () {
                 header = headers[0];
             }
             if (!header) {
-                console.error('Header with either id=[' + config.headerId + '] or tag=<header> could not be found in DOM');
-                return;
+                throw ('Header with either id=[' + config.headerId + '] or tag=<header> could not be found in DOM');
             }
         }
 
@@ -171,7 +165,7 @@ DynamicHeader = (function () {
     }
 
     function insertTrim() {
-        if (header && !trim) {
+        if (!trim) {
             trim = document.getElementById(TRIM_ID);
             if (!trim) {
                 var parent = header.parentElement;
@@ -203,7 +197,7 @@ DynamicHeader = (function () {
     }
 
     function showHeader() {
-        if (isHeaderDynamicHidden()) {
+        if (isHeaderMovedAway()) {
             setHeaderTop(0);
             addClassToHeader(config.slideIn);
             callback();
@@ -211,13 +205,14 @@ DynamicHeader = (function () {
     }
 
     function hideHeader(distance) {
-        var wasHidden = isHeaderDynamicHidden();
+        var wasHidden = isHeaderMovedAway();
+
         if (!wasHidden || !isHeaderInvisible()) {
             var headerHeight = getHeaderHeight();
             if (distance) {
-                setHeaderTop(-Math.abs(distance) + 'px');
+                setHeaderTop(-Math.abs(distance));
             } else {
-                setHeaderTop(-headerHeight + 'px');
+                setHeaderTop(-headerHeight);
             }
             if (!wasHidden) {
                 removeClassFromHeader(config.slideIn);
@@ -233,6 +228,7 @@ DynamicHeader = (function () {
     function clearPause() {
         if (timeoutId) {
             clearTimeout(timeoutId);
+            timeoutId = null;
         }
         pauseStart = 0;
     }
@@ -271,7 +267,7 @@ DynamicHeader = (function () {
 
     function onResize() {
         controlDynamic();
-        if (isHeaderDynamicHidden()) {
+        if (isHeaderMovedAway()) {
             hideHeader();
         }
     }
@@ -290,12 +286,10 @@ DynamicHeader = (function () {
 
     function onLoad() {
         selectHeader();
-        if (header) {
-            controlDynamic();
-            window.addEventListener('resize', onResize);
-            window.addEventListener('scroll', onScroll);
-            header.addEventListener('click', onClick);
-        }
+        controlDynamic();
+        window.addEventListener('resize', onResize);
+        window.addEventListener('scroll', onScroll);
+        header.addEventListener('click', onClick);
     }
 
     function callback() {
@@ -305,18 +299,19 @@ DynamicHeader = (function () {
     }
 
     function cleanUp() {
-        restoreHeaderStyle();
         clearPause();
-
+        if (header) {
+            restoreHeaderStyle();
+        }
         window.removeEventListener('resize', onResize);
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('load', onLoad);
         if (header) {
             header.removeEventListener('click', onClick);
         }
+        initialHeaderStyle = null;
         lastScrollTop = 0;
         header = null;
-        timeoutId = null;
         dynamic = false;
     }
 
