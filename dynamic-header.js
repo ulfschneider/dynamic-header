@@ -101,6 +101,11 @@ DynamicHeader = (function () {
                 dynamic = false;
             }
         }
+        if (isHeaderMovedAway()) {
+            header.style.visibility = 'hidden';
+        } else {
+            header.style.visibility = 'visible';
+        }
     }
 
     function storeHeaderStyle() {
@@ -263,7 +268,7 @@ DynamicHeader = (function () {
     function onResize() {
         controlDynamic();
         if (isDynamic()) {
-            hideHeader(getHeaderHeight() * -2);
+            hideHeader();
             trimHeader();
         }
     }
