@@ -34,7 +34,7 @@ DynamicHeader = (function () {
     //state
     var config;
     var lastScrollTop;
-    var header, trim, timeoutId;
+    var header, trim;
     var initialHeaderStyle;
     var pauseStart;
     var dynamic;
@@ -228,10 +228,6 @@ DynamicHeader = (function () {
     }
 
     function clearPause() {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        }
         pauseStart = 0;
     }
 
@@ -242,10 +238,7 @@ DynamicHeader = (function () {
 
     function startTimedAction(action) {
         startPause();
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-        timeoutId = setTimeout(action ? action : hideHeader, config.pauseDuration);
+        setTimeout(action ? action : hideHeader, config.pauseDuration);
     }
 
     function moveHeader() {
