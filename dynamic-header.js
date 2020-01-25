@@ -53,6 +53,11 @@ DynamicHeader = (function () {
         }
     }
     function setHeaderTop(top) {
+        if (top < 0) {
+            setHeaderInvisible();
+        } else {
+            setHeaderVisible();
+        }
         header.style.top = top + 'px';
     }
     function hasHeaderTop() {
@@ -73,7 +78,7 @@ DynamicHeader = (function () {
     function getHeaderOffsetBottom() {
         return getHeaderOffsetTop() + getHeaderHeight();
     }
-    function isHeaderInvisible() {
+    function isHeaderHidden() {
         if (isDynamic()) {
             return getHeaderTop() + getHeaderHeight() <= 0;
         } else {
@@ -82,6 +87,12 @@ DynamicHeader = (function () {
     }
     function isHeaderMovedAway() {
         return isDynamic() && getHeaderTop() < 0;
+    }
+    function setHeaderInvisible() {
+        header.style.visibility = 'hidden';
+    }
+    function setHeaderVisible() {
+        header.style.visibility = 'visible';
     }
     function isDynamic() {
         return dynamic && hasHeaderTop() && isHeaderFixed();
@@ -101,10 +112,8 @@ DynamicHeader = (function () {
                 dynamic = false;
             }
         }
-        if (isHeaderMovedAway()) {
-            header.style.visibility = 'hidden';
-        } else {
-            header.style.visibility = 'visible';
+        if (!isDynamic()) {
+            setHeaderVisible();
         }
     }
 
@@ -215,7 +224,7 @@ DynamicHeader = (function () {
         if (!config.fixed) {
             var wasHidden = isHeaderMovedAway();
 
-            if (!wasHidden || !isHeaderInvisible()) {
+            if (!wasHidden || !isHeaderHidden()) {
                 var headerHeight = getHeaderHeight();
                 if (distance) {
                     setHeaderTop(-Math.abs(distance));
