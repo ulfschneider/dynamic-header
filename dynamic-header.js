@@ -221,7 +221,7 @@ DynamicHeader = (function () {
     }
 
     function hideHeader(distance) {
-        if (!config.fixed) {
+        if (!config.fixed && isDynamic()) {
             var wasHidden = isHeaderMovedAway();
 
             if (!wasHidden || !isHeaderHidden()) {
