@@ -114,6 +114,7 @@ DynamicHeader = (function () {
         }
         if (!isDynamic()) {
             setHeaderVisible();
+            removeClassFromHeader(config.slideIn);
         }
     }
 
