@@ -37,6 +37,7 @@ DynamicHeader = (function () {
     var header, trim;
     var initialHeaderStyle;
     var pauseStart;
+    var afterBurner;
     var dynamic;
     var TRANSITION = '0.2s ease-in-out';
     var TRIM_ID = 'dynamic-header-trim';
@@ -117,6 +118,11 @@ DynamicHeader = (function () {
         if (!isDynamic()) {
             setHeaderVisible();
             removeClassFromHeader(config.slideIn);
+        } else if (getScrollTop() <= 25) {
+            if (afterBurner) {
+                clearTimeout(afterBurner);
+            }
+            afterBurner = setTimeout(controlDynamic, 500);
         }
     }
 
