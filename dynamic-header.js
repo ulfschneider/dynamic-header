@@ -3,7 +3,7 @@
  *
  * A dynamic header for web pages.
  * 
- * Please download the repo and open the file <code>dynamic-header.html</code> to see the usage.
+ * Please download the repo and open the file <code>index.html</code> to see the usage.
  * 
  * Install DynamicHeader in your Node project with 
  * <pre>
@@ -41,6 +41,7 @@ DynamicHeader = (function () {
     var dynamic;
     var TRANSITION = '0.2s ease-in-out';
     var TRIM_ID = 'dynamic-header-trim';
+    var DELTA = 25;
 
     function getScrollTop() {
         return document.body.scrollTop || document.documentElement.scrollTop;
@@ -118,7 +119,7 @@ DynamicHeader = (function () {
         if (!isDynamic()) {
             setHeaderVisible();
             removeClassFromHeader(config.slideIn);
-        } else if (getScrollTop() <= 25) {
+        } else if (!config.fixed && getScrollTop() <= DELTA) {
             if (afterBurner) {
                 clearTimeout(afterBurner);
             }
@@ -350,7 +351,7 @@ DynamicHeader = (function () {
             config.headerId = 'header';
         }
         if (typeof config.delta == 'undefined') {
-            config.delta = 25;
+            config.delta = DELTA;
         }
         if (typeof config.hideOnClick == 'undefined') {
             config.hideOnClick = true;

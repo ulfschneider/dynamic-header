@@ -13,7 +13,7 @@ DynamicHeader
 
 A dynamic header for web pages.
 
-Please download the repo and open the file <code>dynamic-header.html</code> to see the usage.
+Please download the repo and open the file <code>index.html</code> to see the usage.
 
 Install DynamicHeader in your Node project with 
 
