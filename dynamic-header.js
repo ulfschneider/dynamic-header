@@ -106,7 +106,8 @@ DynamicHeader = (function () {
             setHeaderTop(- getHeaderHeight());
             modifyHeaderStyle();
             dynamic = true;
-        } else if (dynamic && getScrollTop() <= getHeaderOffsetTop()) {
+        } else if ((dynamic && getHeaderOffsetTop() >= getScrollTop())
+            || (isHeaderMovedAway() && getHeaderOffsetBottom() >= getScrollTop())) {
             if (!config.fixed || (config.fixed && getHeaderOffsetTop() > 0)) {
                 restoreHeaderStyle();
                 dynamic = false;

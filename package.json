@@ -1,6 +1,6 @@
 {
     "name": "dheader",
-    "version": "0.5.21",
+    "version": "0.5.22",
     "description": "A dynamic header for web pages",
     "main": "dynamic-header.js",
     "scripts": {
