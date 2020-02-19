@@ -33,7 +33,7 @@
 DynamicHeader = (function () {
     //state
     var config;
-    var lastScrollTop = 0;
+    var lastScrollTop = getScrollTop();
     var header, trim;
     var initialHeaderStyle;
     var pauseStart;
@@ -282,8 +282,9 @@ DynamicHeader = (function () {
             } else {
                 showHeader();
             }
+            lastScrollTop = scrollTop;
         }
-        lastScrollTop = getScrollTop();
+
     }
 
     function onResize() {
