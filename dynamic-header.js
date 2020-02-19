@@ -279,7 +279,7 @@ DynamicHeader = (function () {
                 // if scrolling down 
                 // move the header out of the way
                 hideHeader();
-            } else {
+            } else if (scrollTop < lastScrollTop) {
                 showHeader();
             }
             lastScrollTop = scrollTop;
