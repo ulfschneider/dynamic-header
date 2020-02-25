@@ -1,6 +1,6 @@
 {
     "name": "dheader",
-    "version": "0.5.28",
+    "version": "0.5.29",
     "description": "A dynamic header for web pages",
     "main": "dynamic-header.js",
     "scripts": {
@@ -24,7 +24,7 @@
     "bugs": {
         "url": "https://github.com/ulfschneider/dynamic-header/issues"
     },
-    "homepage": "https://github.com/ulfschneider/dynamic-header#readme",
+    "homepage": "https://ulf.codes/dheader",
     "devDependencies": {
         "browser-sync": "^2.26.7",
         "documentation": "^12.1.4",
