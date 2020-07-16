@@ -1,13 +1,13 @@
 {
     "name": "dheader",
-    "version": "0.5.29",
+    "version": "0.5.30",
     "description": "A dynamic header for web pages",
     "main": "dynamic-header.js",
     "scripts": {
         "start" : "run-p \"watch:*\"",
         "serve" : "run-p \"watch:*\"",
         "watch:serve": "browser-sync start --server --files 'dynamic-header.*' 'index.html'",        
-        "test": "echo \"Err++or: no test specified\" && exit 1",
+        "test": "echo \"Error: no test specified\" && exit 1",
         "build": "minify dynamic-header.js > dynamic-header.min.js && documentation build dynamic-header.js -f md > README.md"
     },
     "repository": {
